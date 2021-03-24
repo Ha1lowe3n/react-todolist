@@ -36,6 +36,12 @@ function App() {
         setTasks(tasks.filter((t) => t.id !== id));
     };
 
+    const changeCheckStatus = (taskId: string) => {
+        const task = tasks.find((t) => t.id === taskId);
+        if (task) task.isDone = !task.isDone;
+        setTasks([...tasks]);
+    };
+
     const getTaskForTodoList = () => {
         switch (todoListFilter) {
             case "active":
@@ -57,6 +63,8 @@ function App() {
                 changeTodoListFilter={changeTodoListFilter}
                 addTask={addTask}
                 removeTask={removeTask}
+                changeCheckStatus={changeCheckStatus}
+                todoListFilter={todoListFilter}
             />
         </div>
     );
