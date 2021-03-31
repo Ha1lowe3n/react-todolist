@@ -3,9 +3,10 @@ import React, { ChangeEvent, MouseEvent, KeyboardEvent, useState } from "react";
 import { TaskType, FilterValuesType } from "./App";
 
 type PropsType = {
+    id: string;
     title: string;
     tasks: Array<TaskType>;
-    changeTodoListFilter: (filterValue: FilterValuesType) => void;
+    changeTodoListFilter: (filterValue: FilterValuesType, id: string) => void;
     removeTask: (id: string) => void;
     addTask: (title: string) => void;
     changeCheckStatus: (taskId: string) => void;
@@ -13,6 +14,7 @@ type PropsType = {
 };
 
 function Todolist({
+    id,
     title,
     tasks,
     changeTodoListFilter,
@@ -43,28 +45,31 @@ function Todolist({
         }
     };
 
-    const tasksTodolist = tasks.map((task) => (
-        <li key={task.id} className={task.isDone ? "is-done" : ""}>
-            <input
-                type="checkbox"
-                checked={task.isDone}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    changeCheckStatus(task.id)
-                }
-            />
-            <span>{task.title}</span>
-            <button onClick={() => removeTask(task.id)}>x</button>
-        </li>
-    ));
+    const tasksTodolist = tasks.map((task) => {
+        const onChangeInput = () => changeCheckStatus(task.id);
+        const onClickBtn = () => removeTask(task.id);
+
+        return (
+            <li key={task.id} className={task.isDone ? "is-done" : ""}>
+                <input
+                    type="checkbox"
+                    checked={task.isDone}
+                    onChange={onChangeInput}
+                />
+                <span>{task.title}</span>
+                <button onClick={onClickBtn}>x</button>
+            </li>
+        );
+    });
 
     const filterTodoList = (e: MouseEvent<HTMLButtonElement>) => {
         switch (e.currentTarget.innerText) {
             case "Active":
-                return changeTodoListFilter("active");
+                return changeTodoListFilter("active", id);
             case "Completed":
-                return changeTodoListFilter("completed");
+                return changeTodoListFilter("completed", id);
             default:
-                return changeTodoListFilter("all");
+                return changeTodoListFilter("all", id);
         }
     };
 
