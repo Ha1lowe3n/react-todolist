@@ -3,18 +3,19 @@ import React, { ChangeEvent, MouseEvent, KeyboardEvent, useState } from "react";
 import { TaskType, FilterValuesType } from "./App";
 
 type PropsType = {
-    id: string;
+    todolistId: string;
     title: string;
     tasks: Array<TaskType>;
     changeTodoListFilter: (filterValue: FilterValuesType, id: string) => void;
-    removeTask: (id: string) => void;
-    addTask: (title: string) => void;
-    changeCheckStatus: (taskId: string) => void;
+    removeTask: (id: string, todolistId: string) => void;
+    addTask: (title: string, todolistId: string) => void;
+    changeCheckStatus: (taskId: string, todolistId: string) => void;
     todoListFilter: FilterValuesType;
+    removeTodolist: (todolistId: string) => void;
 };
 
 function Todolist({
-    id,
+    todolistId,
     title,
     tasks,
     changeTodoListFilter,
@@ -22,6 +23,7 @@ function Todolist({
     addTask,
     changeCheckStatus,
     todoListFilter,
+    removeTodolist,
 }: PropsType) {
     const [newTaskTitle, setNewTaskTitle] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
@@ -37,7 +39,7 @@ function Todolist({
 
     const addTaskHandler = () => {
         if (newTaskTitle.trim() !== "") {
-            addTask(newTaskTitle);
+            addTask(newTaskTitle, todolistId);
             setNewTaskTitle("");
         } else {
             setError("Title is required");
@@ -46,8 +48,8 @@ function Todolist({
     };
 
     const tasksTodolist = tasks.map((task) => {
-        const onChangeInput = () => changeCheckStatus(task.id);
-        const onClickBtn = () => removeTask(task.id);
+        const onChangeInput = () => changeCheckStatus(task.id, todolistId);
+        const btnRemoveTask = () => removeTask(task.id, todolistId);
 
         return (
             <li key={task.id} className={task.isDone ? "is-done" : ""}>
@@ -57,7 +59,7 @@ function Todolist({
                     onChange={onChangeInput}
                 />
                 <span>{task.title}</span>
-                <button onClick={onClickBtn}>x</button>
+                <button onClick={btnRemoveTask}>x</button>
             </li>
         );
     });
@@ -65,17 +67,21 @@ function Todolist({
     const filterTodoList = (e: MouseEvent<HTMLButtonElement>) => {
         switch (e.currentTarget.innerText) {
             case "Active":
-                return changeTodoListFilter("active", id);
+                return changeTodoListFilter("active", todolistId);
             case "Completed":
-                return changeTodoListFilter("completed", id);
+                return changeTodoListFilter("completed", todolistId);
             default:
-                return changeTodoListFilter("all", id);
+                return changeTodoListFilter("all", todolistId);
         }
     };
 
+    const deleteTodolist = () => removeTodolist(todolistId);
+
     return (
         <div>
-            <h3>{title}</h3>
+            <h3>
+                {title} <button onClick={deleteTodolist}>x</button>
+            </h3>
             <div>
                 <input
                     className={error ? "error" : ""}
