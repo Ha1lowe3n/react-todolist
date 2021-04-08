@@ -47,6 +47,7 @@ function App() {
     ) => {
         const todolist = todolists.find((tl) => tl.id === todolistId);
         if (todolist) {
+            console.log(todolist);
             todolist.filter = filterValue;
             setTodolist([...todolists]);
         }
@@ -56,6 +57,7 @@ function App() {
         const newTask = { id: v1(), title, isDone: false };
         const tasks = tasksObj[todolistId];
         const newTasks = [newTask, ...tasks];
+
         tasksObj[todolistId] = newTasks;
         setTasks({ ...tasksObj });
     };
