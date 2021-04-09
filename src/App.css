@@ -7,6 +7,10 @@
   margin-right: 50px;
 }
 
+input {
+  outline:none;
+}
+
 /*Todolist*/
 .error {
   border: red 1px solid;

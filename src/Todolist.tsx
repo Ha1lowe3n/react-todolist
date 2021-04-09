@@ -1,6 +1,7 @@
-import React, { ChangeEvent, MouseEvent, KeyboardEvent, useState } from "react";
+import React, { MouseEvent } from "react";
 
 import { TaskType, FilterValuesType } from "./App";
+import AddItemForm from "./AddItemForm";
 
 type PropsType = {
     todolistId: string;
@@ -25,28 +26,6 @@ function Todolist({
     todoListFilter,
     removeTodolist,
 }: PropsType) {
-    const [newTaskTitle, setNewTaskTitle] = useState<string>("");
-    const [error, setError] = useState<string | null>(null);
-
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setNewTaskTitle(e.currentTarget.value);
-    };
-
-    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null);
-        if (e.key === "Enter") addTaskHandler();
-    };
-
-    const addTaskHandler = () => {
-        if (newTaskTitle.trim() !== "") {
-            addTask(newTaskTitle, todolistId);
-            setNewTaskTitle("");
-        } else {
-            setError("Title is required");
-            setTimeout(() => setError(null), 3500);
-        }
-    };
-
     const tasksTodolist = tasks.map((task) => {
         const onChangeInput = () => changeCheckStatus(task.id, todolistId);
         const btnRemoveTask = () => removeTask(task.id, todolistId);
@@ -76,22 +55,14 @@ function Todolist({
     };
 
     const deleteTodolist = () => removeTodolist(todolistId);
+    const addItem = (title: string) => addTask(title, todolistId);
 
     return (
         <div>
             <h3>
                 {title} <button onClick={deleteTodolist}>x</button>
             </h3>
-            <div>
-                <input
-                    className={error ? "error" : ""}
-                    value={newTaskTitle}
-                    onChange={onChangeHandler}
-                    onKeyPress={onKeyPressHandler}
-                />
-                <button onClick={addTaskHandler}>+</button>
-                {error && <div className={"error-message"}>{error}</div>}
-            </div>
+            <AddItemForm addItem={addItem} />
 
             <ul>{tasksTodolist}</ul>
 

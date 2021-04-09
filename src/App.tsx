@@ -4,6 +4,7 @@ import { v1 } from "uuid";
 import "./App.css";
 
 import Todolist from "./Todolist";
+import AddItemForm from "./AddItemForm";
 
 export type TaskType = {
     id: string;
@@ -19,6 +20,10 @@ type TodolistsType = {
     filter: FilterValuesType;
 };
 
+type TaskStateType = {
+    [key: string]: Array<TaskType>;
+};
+
 function App() {
     const todolistId1 = v1();
     const todolistId2 = v1();
@@ -28,7 +33,7 @@ function App() {
         { id: todolistId2, title: "2nd", filter: "all" },
     ]);
 
-    const [tasksObj, setTasks] = useState({
+    const [tasksObj, setTasks] = useState<TaskStateType>({
         [todolistId1]: [
             { id: v1(), title: "HTML", isDone: true },
             { id: v1(), title: "CSS", isDone: true },
@@ -47,7 +52,6 @@ function App() {
     ) => {
         const todolist = todolists.find((tl) => tl.id === todolistId);
         if (todolist) {
-            console.log(todolist);
             todolist.filter = filterValue;
             setTodolist([...todolists]);
         }
@@ -86,8 +90,26 @@ function App() {
         setTasks({ ...tasksObj });
     };
 
+    const addTodolist = (title: string) => {
+        const newTodolist: TodolistsType = {
+            id: v1(),
+            title,
+            filter: "all",
+        };
+        setTodolist([...todolists, newTodolist]);
+        setTasks({
+            ...tasksObj,
+            [newTodolist.id]: [],
+        });
+    };
+
     return (
         <div className="App">
+            <div>
+                <h3>Add new todolist</h3>
+                <AddItemForm addItem={addTodolist} />
+            </div>
+
             {todolists.map((tl) => {
                 let tasksForTodoList = tasksObj[tl.id];
 
