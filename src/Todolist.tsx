@@ -2,6 +2,7 @@ import React, { MouseEvent } from "react";
 
 import { TaskType, FilterValuesType } from "./App";
 import AddItemForm from "./AddItemForm";
+import EditableSpan from "./EditableSpan";
 
 type PropsType = {
     todolistId: string;
@@ -13,6 +14,12 @@ type PropsType = {
     changeCheckStatus: (taskId: string, todolistId: string) => void;
     todoListFilter: FilterValuesType;
     removeTodolist: (todolistId: string) => void;
+    changeTaskTitle: (
+        taskId: string,
+        todolistId: string,
+        newValue: string
+    ) => void;
+    changeStateTitleTodolist: (newTitle: string, todolistId: string) => void;
 };
 
 function Todolist({
@@ -25,10 +32,15 @@ function Todolist({
     changeCheckStatus,
     todoListFilter,
     removeTodolist,
+    changeTaskTitle,
+    changeStateTitleTodolist,
 }: PropsType) {
     const tasksTodolist = tasks.map((task) => {
         const onChangeInput = () => changeCheckStatus(task.id, todolistId);
         const btnRemoveTask = () => removeTask(task.id, todolistId);
+        const onChangeTitle = (newValue: string) => {
+            changeTaskTitle(task.id, todolistId, newValue);
+        };
 
         return (
             <li key={task.id} className={task.isDone ? "is-done" : ""}>
@@ -37,7 +49,10 @@ function Todolist({
                     checked={task.isDone}
                     onChange={onChangeInput}
                 />
-                <span>{task.title}</span>
+                <EditableSpan
+                    title={task.title}
+                    onChangeTitle={onChangeTitle}
+                />
                 <button onClick={btnRemoveTask}>x</button>
             </li>
         );
@@ -56,11 +71,18 @@ function Todolist({
 
     const deleteTodolist = () => removeTodolist(todolistId);
     const addItem = (title: string) => addTask(title, todolistId);
+    const changeTodolistTitle = (newTitle: string) => {
+        changeStateTitleTodolist(newTitle, todolistId);
+    };
 
     return (
         <div>
             <h3>
-                {title} <button onClick={deleteTodolist}>x</button>
+                <EditableSpan
+                    title={title}
+                    onChangeTitle={changeTodolistTitle}
+                />{" "}
+                <button onClick={deleteTodolist}>x</button>
             </h3>
             <AddItemForm addItem={addItem} />
 
