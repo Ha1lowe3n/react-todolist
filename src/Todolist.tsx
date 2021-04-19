@@ -3,6 +3,8 @@ import React, { MouseEvent } from "react";
 import { TaskType, FilterValuesType } from "./App";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
+import { Button, Checkbox, IconButton } from "@material-ui/core";
+import { Delete } from "@material-ui/icons";
 
 type PropsType = {
     todolistId: string;
@@ -44,22 +46,20 @@ function Todolist({
 
         return (
             <li key={task.id} className={task.isDone ? "is-done" : ""}>
-                <input
-                    type="checkbox"
-                    checked={task.isDone}
-                    onChange={onChangeInput}
-                />
+                <Checkbox checked={task.isDone} onChange={onChangeInput} />
                 <EditableSpan
                     title={task.title}
                     onChangeTitle={onChangeTitle}
                 />
-                <button onClick={btnRemoveTask}>x</button>
+                <IconButton aria-label="delete" onClick={btnRemoveTask}>
+                    <Delete />
+                </IconButton>
             </li>
         );
     });
 
     const filterTodoList = (e: MouseEvent<HTMLButtonElement>) => {
-        switch (e.currentTarget.innerText) {
+        switch (e.currentTarget.childNodes[0].textContent) {
             case "Active":
                 return changeTodoListFilter("active", todolistId);
             case "Completed":
@@ -82,35 +82,37 @@ function Todolist({
                     title={title}
                     onChangeTitle={changeTodolistTitle}
                 />{" "}
-                <button onClick={deleteTodolist}>x</button>
+                <IconButton aria-label="delete" onClick={deleteTodolist}>
+                    <Delete />
+                </IconButton>
             </h3>
             <AddItemForm addItem={addItem} />
 
-            <ul>{tasksTodolist}</ul>
+            <ul className={"todolists_tasks"}>{tasksTodolist}</ul>
 
             <div>
-                <button
-                    className={todoListFilter === "all" ? "active-filter" : ""}
+                <Button
+                    variant={todoListFilter === "all" ? "contained" : "text"}
                     onClick={filterTodoList}
                 >
                     All
-                </button>
-                <button
-                    className={
-                        todoListFilter === "active" ? "active-filter" : ""
-                    }
+                </Button>
+                <Button
+                    color={"primary"}
+                    variant={todoListFilter === "active" ? "contained" : "text"}
                     onClick={filterTodoList}
                 >
                     Active
-                </button>
-                <button
-                    className={
-                        todoListFilter === "completed" ? "active-filter" : ""
+                </Button>
+                <Button
+                    color={"secondary"}
+                    variant={
+                        todoListFilter === "completed" ? "contained" : "text"
                     }
                     onClick={filterTodoList}
                 >
                     Completed
-                </button>
+                </Button>
             </div>
         </div>
     );

@@ -1,21 +1,24 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 
+import { IconButton, TextField } from "@material-ui/core";
+import { ControlPoint } from "@material-ui/icons";
+
 type AddItemFormPropsType = {
     addItem: (title: string) => void;
 };
 
 function AddItemForm({ addItem }: AddItemFormPropsType) {
     const [newTaskTitle, setNewTaskTitle] = useState<string>("");
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<boolean>(false);
 
     const addTaskHandler = () => {
         if (newTaskTitle.trim() !== "") {
             addItem(newTaskTitle.trim());
             setNewTaskTitle("");
         } else {
-            setError("Title is required");
+            setError(true);
             setNewTaskTitle("");
-            setTimeout(() => setError(null), 3500);
+            setTimeout(() => setError(false), 3500);
         }
     };
 
@@ -24,19 +27,29 @@ function AddItemForm({ addItem }: AddItemFormPropsType) {
     };
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null);
+        setError(false);
         if (e.key === "Enter") addTaskHandler();
     };
+
     return (
         <div>
-            <input
-                className={error ? "error" : ""}
+            <TextField
+                label="Writing some..."
+                variant={"outlined"}
+                error={error}
                 value={newTaskTitle}
                 onChange={onChangeHandler}
                 onKeyPress={onKeyPressHandler}
+                helperText={error && "Title is empty"}
             />
-            <button onClick={addTaskHandler}>+</button>
-            {error && <div className={"error-message"}>{error}</div>}
+            <IconButton
+                style={{ padding: "16px" }}
+                aria-label="delete"
+                onClick={addTaskHandler}
+                color={"primary"}
+            >
+                <ControlPoint />
+            </IconButton>
         </div>
     );
 }

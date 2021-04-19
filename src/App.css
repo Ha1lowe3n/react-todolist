@@ -1,32 +1,18 @@
-.App {
-  padding: 30px;
-  display: flex;
+
+.todolists_tasks {
+  margin-left: 0;
+  padding-left: 0;
 }
 
-.App > div {
-  margin-right: 50px;
-}
-
-input {
-  outline:none;
-}
-
-/*Todolist*/
-.error {
-  border: red 1px solid;
-}
-
-.error-message {
-  color: red;
-}
-
-.active-filter {
-  background-color: aquamarine;
+.todolists_tasks li {
+  list-style-type: none;
 }
 
 .is-done {
   opacity: 0.5;
 }
+
+
 
 
 
