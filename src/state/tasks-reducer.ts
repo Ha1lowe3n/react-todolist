@@ -1,5 +1,6 @@
-import { FilterValuesType, TodolistsType } from "../App";
+//import { FilterValuesType, TodolistsType } from "../App";
 import { v1 } from "uuid";
+import { TaskStateType } from "../App";
 
 type ActionsType =
     | ReturnType<typeof removeTodolistAC>
@@ -7,34 +8,26 @@ type ActionsType =
     | ReturnType<typeof changeTodolistTitleAC>
     | ReturnType<typeof changeTodolistFilterAC>;
 
-export const todolistsReducer = (
-    state: TodolistsType[],
+export const tasksReducer = (
+    state: TaskStateType,
     action: ActionsType
-): TodolistsType[] => {
+): TaskStateType => {
     switch (action.type) {
-        case "REMOVE-TODOLIST":
-            return state.filter((tl) => tl.id !== action.id);
-        case "ADD-TODOLIST":
-            return [...state, { id: v1(), title: action.title, filter: "all" }];
-        case "CHANGE-TODOLIST-TITLE": {
-            const todolist = state.find((t) => t.id === action.id);
-            if (todolist) todolist.title = action.title;
-            return [...state];
-        }
-        case "CHANGE-TODOLIST-FILTER": {
-            const todolist = state.find((t) => t.id === action.id);
-            if (todolist) todolist.filter = action.filter;
-            return [...state];
-        }
+        case "ADD-TASK":
+            return {
+                ...state,
+                [action.todolistId]: [...]
+            }
         default:
             throw new Error("I don't understand this type");
     }
 };
 
 // actions creators
-export const removeTodolistAC = (todolistId: string) => ({
-    type: "REMOVE-TODOLIST" as const,
-    id: todolistId,
+export const addTaskAC = (title: string, todolistId: string) => ({
+    type: "ADD-TASK" as const,
+    title,
+    todolistId,
 });
 
 export const addTodolistAC = (newTodolistTitle: string) => ({
