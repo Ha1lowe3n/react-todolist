@@ -1,12 +1,14 @@
-//import { FilterValuesType, TodolistsType } from "../App";
 import { v1 } from "uuid";
 import { TaskStateType } from "../App";
+import { addTodolistAC, removeTodolistAC } from "./todolists-reducer";
 
 type ActionsType =
-    | ReturnType<typeof removeTodolistAC>
+    | ReturnType<typeof addTaskAC>
+    | ReturnType<typeof removeTaskAC>
+    | ReturnType<typeof changeCheckTaskStatusAC>
+    | ReturnType<typeof changeTaskTitleAC>
     | ReturnType<typeof addTodolistAC>
-    | ReturnType<typeof changeTodolistTitleAC>
-    | ReturnType<typeof changeTodolistFilterAC>;
+    | ReturnType<typeof removeTodolistAC>;
 
 export const tasksReducer = (
     state: TaskStateType,
@@ -16,8 +18,47 @@ export const tasksReducer = (
         case "ADD-TASK":
             return {
                 ...state,
-                [action.todolistId]: [...]
-            }
+                [action.todolistId]: [
+                    { id: v1(), title: action.title, isDone: false },
+                    ...state[action.todolistId],
+                ],
+            };
+        case "REMOVE-TASK":
+            return {
+                ...state,
+                [action.todolistId]: [
+                    ...state[action.todolistId].filter(
+                        (t) => t.id !== action.taskId
+                    ),
+                ],
+            };
+        case "CHANGE-CHECK-TASK-STATUS": {
+            const newState = { ...state };
+            const task = newState[action.todolistId].find(
+                (t) => t.id === action.taskId
+            );
+            if (task) task.isDone = !task.isDone;
+            return newState;
+        }
+        case "CHANGE-TASK-TITLE": {
+            const newState = { ...state };
+            const task = newState[action.todolistId].find(
+                (t) => t.id === action.taskId
+            );
+            if (task) task.title = action.newTitle;
+            return newState;
+        }
+        case "ADD-TODOLIST": {
+            const newState = { ...state };
+            newState[action.id] = [];
+            return newState;
+        }
+        case "REMOVE-TODOLIST": {
+            const newState = { ...state };
+            delete newState[action.id];
+            return newState;
+        }
+
         default:
             throw new Error("I don't understand this type");
     }
@@ -30,25 +71,28 @@ export const addTaskAC = (title: string, todolistId: string) => ({
     todolistId,
 });
 
-export const addTodolistAC = (newTodolistTitle: string) => ({
-    type: "ADD-TODOLIST" as const,
-    title: newTodolistTitle,
+export const removeTaskAC = (taskId: string, todolistId: string) => ({
+    type: "REMOVE-TASK" as const,
+    taskId,
+    todolistId,
 });
 
-export const changeTodolistTitleAC = (
-    todolistId: string,
-    newTodolistTitle: string
+export const changeCheckTaskStatusAC = (
+    taskId: string,
+    todolistId: string
 ) => ({
-    type: "CHANGE-TODOLIST-TITLE" as const,
-    id: todolistId,
-    title: newTodolistTitle,
+    type: "CHANGE-CHECK-TASK-STATUS" as const,
+    taskId,
+    todolistId,
 });
 
-export const changeTodolistFilterAC = (
+export const changeTaskTitleAC = (
+    taskId: string,
     todolistId: string,
-    newFilter: FilterValuesType
+    newTitle: string
 ) => ({
-    type: "CHANGE-TODOLIST-FILTER" as const,
-    id: todolistId,
-    filter: newFilter,
+    type: "CHANGE-TASK-TITLE" as const,
+    taskId,
+    todolistId,
+    newTitle,
 });
