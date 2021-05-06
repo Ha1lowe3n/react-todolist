@@ -1,6 +1,12 @@
 import { v1 } from "uuid";
+
 import { TaskStateType } from "../App";
-import { addTodolistAC, removeTodolistAC } from "./todolists-reducer";
+import {
+    addTodolistAC,
+    removeTodolistAC,
+    todolistId1,
+    todolistId2,
+} from "./todolists-reducer";
 
 type ActionsType =
     | ReturnType<typeof addTaskAC>
@@ -10,8 +16,21 @@ type ActionsType =
     | ReturnType<typeof addTodolistAC>
     | ReturnType<typeof removeTodolistAC>;
 
+const initialState: TaskStateType = {
+    [todolistId1]: [
+        { id: v1(), title: "HTML", isDone: true },
+        { id: v1(), title: "CSS", isDone: true },
+        { id: v1(), title: "React", isDone: false },
+    ],
+    [todolistId2]: [
+        { id: v1(), title: "Milk", isDone: true },
+        { id: v1(), title: "book", isDone: true },
+        { id: v1(), title: "salt", isDone: false },
+    ],
+};
+
 export const tasksReducer = (
-    state: TaskStateType,
+    state: TaskStateType = initialState,
     action: ActionsType
 ): TaskStateType => {
     switch (action.type) {
@@ -60,7 +79,7 @@ export const tasksReducer = (
         }
 
         default:
-            throw new Error("I don't understand this type");
+            return state;
     }
 };
 
