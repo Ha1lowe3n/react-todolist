@@ -64,7 +64,7 @@ export const tasksReducer = (
     }
 };
 
-// actions creators
+// action creators
 export const addTaskAC = (title: string, todolistId: string) => ({
     type: "ADD-TASK" as const,
     title,

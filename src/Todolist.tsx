@@ -3,6 +3,7 @@ import React, { MouseEvent } from "react";
 import { TaskType, FilterValuesType } from "./App";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
+
 import { Button, Checkbox, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 
