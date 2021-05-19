@@ -7,7 +7,7 @@ type AddItemFormPropsType = {
     addItem: (title: string) => void;
 };
 
-function AddItemForm({ addItem }: AddItemFormPropsType) {
+const AddItemForm = React.memo(function ({ addItem }: AddItemFormPropsType) {
     console.log("AddItemForm is called");
     const [newTaskTitle, setNewTaskTitle] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
@@ -28,10 +28,8 @@ function AddItemForm({ addItem }: AddItemFormPropsType) {
     };
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (error) {
-            setError(false);
-            if (e.key === "Enter") addTaskHandler();
-        }
+        if (error) setError(false);
+        if (e.key === "Enter") addTaskHandler();
     };
 
     return (
@@ -55,6 +53,6 @@ function AddItemForm({ addItem }: AddItemFormPropsType) {
             </IconButton>
         </div>
     );
-}
+});
 
 export default AddItemForm;

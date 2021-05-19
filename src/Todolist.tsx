@@ -1,4 +1,4 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useCallback } from "react";
 
 import { TaskType, FilterValuesType } from "./App";
 import AddItemForm from "./AddItemForm";
@@ -25,7 +25,7 @@ type PropsType = {
     changeStateTitleTodolist: (newTitle: string, todolistId: string) => void;
 };
 
-function Todolist({
+const Todolist = React.memo(function ({
     todolistId,
     title,
     tasks,
@@ -42,9 +42,12 @@ function Todolist({
     const tasksTodolist = tasks.map((task) => {
         const onChangeInput = () => changeCheckStatus(task.id, todolistId);
         const btnRemoveTask = () => removeTask(task.id, todolistId);
-        const onChangeTitle = (newValue: string) => {
-            changeTaskTitle(task.id, todolistId, newValue);
-        };
+        const onChangeTitle = useCallback(
+            (newValue: string) => {
+                changeTaskTitle(task.id, todolistId, newValue);
+            },
+            [task.id]
+        );
 
         return (
             <li key={task.id} className={task.isDone ? "is-done" : ""}>
@@ -60,22 +63,42 @@ function Todolist({
         );
     });
 
-    const filterTodoList = (e: MouseEvent<HTMLButtonElement>) => {
-        switch (e.currentTarget.childNodes[0].textContent) {
-            case "Active":
-                return changeTodoListFilter("active", todolistId);
-            case "Completed":
-                return changeTodoListFilter("completed", todolistId);
-            default:
-                return changeTodoListFilter("all", todolistId);
-        }
-    };
+    const filterTodoList = useCallback(
+        (e: MouseEvent<HTMLButtonElement>) => {
+            switch (e.currentTarget.childNodes[0].textContent) {
+                case "Active":
+                    return changeTodoListFilter("active", todolistId);
+                case "Completed":
+                    return changeTodoListFilter("completed", todolistId);
+                default:
+                    return changeTodoListFilter("all", todolistId);
+            }
+        },
+        [changeTodoListFilter, todolistId]
+    );
 
     const deleteTodolist = () => removeTodolist(todolistId);
-    const addItem = (title: string) => addTask(title, todolistId);
-    const changeTodolistTitle = (newTitle: string) => {
-        changeStateTitleTodolist(newTitle, todolistId);
-    };
+
+    const addItem = useCallback(
+        (title: string) => {
+            addTask(title, todolistId);
+        },
+        [addTask, todolistId]
+    );
+
+    const changeTodolistTitle = useCallback(
+        (newTitle: string) => {
+            changeStateTitleTodolist(newTitle, todolistId);
+        },
+        [changeStateTitleTodolist, todolistId]
+    );
+
+    if (todoListFilter === "active") {
+        tasks = tasks.filter((t) => !t.isDone);
+    }
+    if (todoListFilter === "completed") {
+        tasks = tasks.filter((t) => t.isDone);
+    }
 
     return (
         <div>
@@ -118,6 +141,6 @@ function Todolist({
             </div>
         </div>
     );
-}
+});
 
 export default Todolist;

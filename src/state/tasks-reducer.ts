@@ -36,7 +36,10 @@ export const tasksReducer = (
                 ],
             };
         case "CHANGE-CHECK-TASK-STATUS": {
-            const newState = { ...state };
+            const newState = {
+                ...state,
+                [action.todolistId]: [...state[action.todolistId]],
+            };
             const task = newState[action.todolistId].find(
                 (t) => t.id === action.taskId
             );
@@ -44,7 +47,10 @@ export const tasksReducer = (
             return newState;
         }
         case "CHANGE-TASK-TITLE": {
-            const newState = { ...state };
+            const newState = {
+                ...state,
+                [action.todolistId]: [...state[action.todolistId]],
+            };
             const task = newState[action.todolistId].find(
                 (t) => t.id === action.taskId
             );
@@ -61,7 +67,6 @@ export const tasksReducer = (
             delete newState[action.id];
             return newState;
         }
-
         default:
             return state;
     }
