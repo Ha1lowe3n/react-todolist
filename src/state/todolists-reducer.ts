@@ -8,13 +8,7 @@ type ActionsType =
     | ReturnType<typeof changeTodolistTitleAC>
     | ReturnType<typeof changeTodolistFilterAC>;
 
-export const todolistId1 = v1();
-export const todolistId2 = v1();
-
-const initialState: Array<TodolistsType> = [
-    { id: todolistId1, title: "1st", filter: "all" },
-    { id: todolistId2, title: "2nd", filter: "all" },
-];
+const initialState: Array<TodolistsType> = [];
 
 export const todolistsReducer = (
     state: Array<TodolistsType> = initialState,

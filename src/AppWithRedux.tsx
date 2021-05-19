@@ -49,6 +49,8 @@ export type TaskStateType = {
 };
 
 function AppWithRedux() {
+    console.log("App is called");
+
     const dispatch = useDispatch();
     const todolists = useSelector<AppStateType, Array<TodolistsType>>(
         (state) => state.todolists

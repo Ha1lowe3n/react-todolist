@@ -8,6 +8,7 @@ type AddItemFormPropsType = {
 };
 
 function AddItemForm({ addItem }: AddItemFormPropsType) {
+    console.log("AddItemForm is called");
     const [newTaskTitle, setNewTaskTitle] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
 
@@ -27,8 +28,10 @@ function AddItemForm({ addItem }: AddItemFormPropsType) {
     };
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(false);
-        if (e.key === "Enter") addTaskHandler();
+        if (error) {
+            setError(false);
+            if (e.key === "Enter") addTaskHandler();
+        }
     };
 
     return (

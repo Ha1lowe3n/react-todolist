@@ -38,6 +38,7 @@ function Todolist({
     changeTaskTitle,
     changeStateTitleTodolist,
 }: PropsType) {
+    console.log("Todolist is called");
     const tasksTodolist = tasks.map((task) => {
         const onChangeInput = () => changeCheckStatus(task.id, todolistId);
         const btnRemoveTask = () => removeTask(task.id, todolistId);

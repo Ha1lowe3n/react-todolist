@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer } from "react";
 import { v1 } from "uuid";
 
 import "./App.css";
@@ -16,6 +16,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
+
 import {
     addTodolistAC,
     changeTodolistFilterAC,
