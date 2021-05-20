@@ -11,6 +11,7 @@ const EditableSpan = React.memo(function ({
     title,
     onChangeTitle,
 }: EditableSpanPropsType) {
+    console.log("EditableSpan");
     const [editMode, setEditMode] = useState<boolean>(false);
     const [stateTitle, setStateTitle] = useState("");
 

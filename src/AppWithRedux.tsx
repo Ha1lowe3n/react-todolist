@@ -14,8 +14,8 @@ import {
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 
-import Todolist from "./Todolist";
-import AddItemForm from "./AddItemForm";
+import Todolist from "./components/Todolist";
+import AddItemForm from "./components/AddItemForm";
 import {
     addTodolistAC,
     changeTodolistFilterAC,

@@ -3,8 +3,8 @@ import { v1 } from "uuid";
 
 import "./App.css";
 
-import Todolist from "./Todolist";
-import AddItemForm from "./AddItemForm";
+import Todolist from "./components/Todolist";
+import AddItemForm from "./components/AddItemForm";
 import {
     AppBar,
     Button,

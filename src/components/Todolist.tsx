@@ -1,11 +1,12 @@
 import React, { MouseEvent, useCallback } from "react";
 
-import { TaskType, FilterValuesType } from "./App";
-import AddItemForm from "./AddItemForm";
-import EditableSpan from "./EditableSpan";
-
 import { Button, Checkbox, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
+
+import { TaskType, FilterValuesType } from "../App";
+import AddItemForm from "./AddItemForm";
+import EditableSpan from "./EditableSpan";
+import Task from "./Task";
 
 type PropsType = {
     todolistId: string;
@@ -39,30 +40,6 @@ const Todolist = React.memo(function ({
     changeStateTitleTodolist,
 }: PropsType) {
     console.log("Todolist is called");
-    const tasksTodolist = tasks.map((task) => {
-        const onChangeInput = () => changeCheckStatus(task.id, todolistId);
-        const btnRemoveTask = () => removeTask(task.id, todolistId);
-        const onChangeTitle = useCallback(
-            (newValue: string) => {
-                changeTaskTitle(task.id, todolistId, newValue);
-            },
-            [task.id]
-        );
-
-        return (
-            <li key={task.id} className={task.isDone ? "is-done" : ""}>
-                <Checkbox checked={task.isDone} onChange={onChangeInput} />
-                <EditableSpan
-                    title={task.title}
-                    onChangeTitle={onChangeTitle}
-                />
-                <IconButton aria-label="delete" onClick={btnRemoveTask}>
-                    <Delete />
-                </IconButton>
-            </li>
-        );
-    });
-
     const filterTodoList = useCallback(
         (e: MouseEvent<HTMLButtonElement>) => {
             switch (e.currentTarget.childNodes[0].textContent) {
@@ -113,7 +90,20 @@ const Todolist = React.memo(function ({
             </h3>
             <AddItemForm addItem={addItem} />
 
-            <ul className={"todolists_tasks"}>{tasksTodolist}</ul>
+            <ul className={"todolists_tasks"}>
+                {tasks.map((task) => {
+                    return (
+                        <Task
+                            key={task.id}
+                            changeCheckStatus={changeCheckStatus}
+                            removeTask={removeTask}
+                            changeTaskTitle={changeTaskTitle}
+                            task={task}
+                            todolistId={todolistId}
+                        />
+                    );
+                })}
+            </ul>
 
             <div>
                 <Button

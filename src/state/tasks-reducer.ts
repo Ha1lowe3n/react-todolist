@@ -35,28 +35,24 @@ export const tasksReducer = (
                     ),
                 ],
             };
-        case "CHANGE-CHECK-TASK-STATUS": {
-            const newState = {
+        case "CHANGE-CHECK-TASK-STATUS":
+            return {
                 ...state,
-                [action.todolistId]: [...state[action.todolistId]],
+                [action.todolistId]: state[action.todolistId].map((task) => {
+                    return task.id === action.taskId
+                        ? { ...task, isDone: !task.isDone }
+                        : task;
+                }),
             };
-            const task = newState[action.todolistId].find(
-                (t) => t.id === action.taskId
-            );
-            if (task) task.isDone = !task.isDone;
-            return newState;
-        }
-        case "CHANGE-TASK-TITLE": {
-            const newState = {
+        case "CHANGE-TASK-TITLE":
+            return {
                 ...state,
-                [action.todolistId]: [...state[action.todolistId]],
+                [action.todolistId]: state[action.todolistId].map((task) => {
+                    return task.id === action.taskId
+                        ? { ...task, title: action.newTitle }
+                        : task;
+                }),
             };
-            const task = newState[action.todolistId].find(
-                (t) => t.id === action.taskId
-            );
-            if (task) task.title = action.newTitle;
-            return newState;
-        }
         case "ADD-TODOLIST": {
             const newState = { ...state };
             newState[action.id] = [];
