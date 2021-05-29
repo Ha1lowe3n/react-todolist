@@ -1,7 +1,9 @@
 import React from "react";
+// @ts-ignore
 import { Story, Meta } from "@storybook/react/types-6-0";
-
+// @ts-ignore
 import { action } from "@storybook/addon-actions";
+
 import EditableSpan, {
     EditableSpanPropsType,
 } from "../components/EditableSpan";
