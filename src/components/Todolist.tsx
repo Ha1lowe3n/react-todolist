@@ -1,6 +1,6 @@
 import React, { MouseEvent, useCallback } from "react";
 
-import { Button, Checkbox, IconButton } from "@material-ui/core";
+import { Button, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 
 import { TaskType, FilterValuesType } from "../App";
