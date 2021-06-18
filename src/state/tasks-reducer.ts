@@ -1,9 +1,9 @@
 import { v1 } from "uuid";
 
-import { TaskStateType } from "../AppWithRedux";
 import { addTodolistAC, removeTodolistAC } from "./todolists-reducer";
+import { TaskPriorities, TaskStatuses, TaskType } from "../api/todolists-api";
 
-type ActionsType =
+export type TaskActionsType =
     | ReturnType<typeof addTaskAC>
     | ReturnType<typeof removeTaskAC>
     | ReturnType<typeof changeCheckTaskStatusAC>
@@ -11,18 +11,33 @@ type ActionsType =
     | ReturnType<typeof addTodolistAC>
     | ReturnType<typeof removeTodolistAC>;
 
+export type TaskStateType = {
+    [key: string]: Array<TaskType>;
+};
+
 const initialState: TaskStateType = {};
 
 export const tasksReducer = (
     state: TaskStateType = initialState,
-    action: ActionsType
+    action: TaskActionsType
 ): TaskStateType => {
     switch (action.type) {
         case "ADD-TASK":
             return {
                 ...state,
                 [action.todolistId]: [
-                    { id: v1(), title: action.title, isDone: false },
+                    {
+                        id: v1(),
+                        title: action.title,
+                        status: TaskStatuses.New,
+                        addedDate: "",
+                        deadline: null,
+                        description: null,
+                        order: 0,
+                        priority: TaskPriorities.Low,
+                        startDate: null,
+                        todoListId: action.todolistId,
+                    },
                     ...state[action.todolistId],
                 ],
             };
@@ -40,7 +55,13 @@ export const tasksReducer = (
                 ...state,
                 [action.todolistId]: state[action.todolistId].map((task) => {
                     return task.id === action.taskId
-                        ? { ...task, isDone: !task.isDone }
+                        ? {
+                              ...task,
+                              status:
+                                  task.status === TaskStatuses.New
+                                      ? TaskStatuses.Completed
+                                      : TaskStatuses.New,
+                          }
                         : task;
                 }),
             };

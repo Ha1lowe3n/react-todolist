@@ -1,5 +1,5 @@
 import { createStore, combineReducers, compose } from "redux";
-import { todolistsReducer } from "./todolists-reducer";
+import { TodolistActionsType, todolistsReducer } from "./todolists-reducer";
 import { tasksReducer } from "./tasks-reducer";
 
 declare global {
@@ -15,5 +15,6 @@ const rootReducer = combineReducers({
 });
 
 export type AppStateType = ReturnType<typeof rootReducer>;
+export type AppActionsType = TodolistActionsType
 
 export const store = createStore(rootReducer, composeEnhancers());

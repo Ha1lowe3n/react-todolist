@@ -3,10 +3,11 @@ import React, { MouseEvent, useCallback } from "react";
 import { Button, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 
-import { TaskType, FilterValuesType } from "../App";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
 import Task from "./Task";
+import { FilterValuesType } from "../state/todolists-reducer";
+import { TaskStatuses, TaskType } from "../api/todolists-api";
 
 type PropsType = {
     todolistId: string;
@@ -39,7 +40,6 @@ const Todolist = React.memo(function ({
     changeTaskTitle,
     changeStateTitleTodolist,
 }: PropsType) {
-    console.log("Todolist is called");
     const filterTodoList = useCallback(
         (e: MouseEvent<HTMLButtonElement>) => {
             switch (e.currentTarget.childNodes[0].textContent) {
@@ -71,12 +71,13 @@ const Todolist = React.memo(function ({
     );
 
     if (todoListFilter === "active") {
-        tasks = tasks.filter((t) => !t.isDone);
+        tasks = tasks.filter((t) => t.status === TaskStatuses.New);
     }
     if (todoListFilter === "completed") {
-        tasks = tasks.filter((t) => t.isDone);
+        tasks = tasks.filter((t) => t.status === TaskStatuses.Completed);
     }
 
+    console.log(tasks);
     return (
         <div>
             <h3>
@@ -104,7 +105,6 @@ const Todolist = React.memo(function ({
                     );
                 })}
             </ul>
-
             <div>
                 <Button
                     variant={todoListFilter === "all" ? "contained" : "text"}
