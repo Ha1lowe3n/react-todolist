@@ -9,6 +9,8 @@ export default {
 
 const { getTasks, createTask, deleteTask, updateTask } = tasksAPI;
 
+// если кто-то будет читать этот код - мне в падлу было рефакторить все это, да и просто нет времени
+
 export const GetTasks = () => {
     const [state, setState] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -189,6 +191,7 @@ export const UpdateTask = () => {
     const [modelPriority, setModelPriority] = useState<number>(0);
     const [modelStartDate, setModelStartDate] = useState<string | null>(null);
     const [modelStatus, setModelStatus] = useState<number>(0);
+
     const model: UpdateTaskModelType = {
         title: modelTitle,
         deadline: modelDeadline,

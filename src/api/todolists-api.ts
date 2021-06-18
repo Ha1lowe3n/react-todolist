@@ -9,8 +9,8 @@ type ResponseType<T> = {
 };
 // --------------------
 
-// ----- Todolists types -----
-type TodolistsType = {
+// ----- Todolist types -----
+export type TodolistType = {
     id: string;
     title: string;
     addedDate: string;
@@ -19,7 +19,7 @@ type TodolistsType = {
 // --------------------
 
 // ----- Tasks types -----
-type TaskType = {
+export type TaskType = {
     addedDate: string;
     deadline: null | string;
     description: null | string;
@@ -56,11 +56,11 @@ export const instance = axios.create({
 
 export const todolistsAPI = {
     getTodolists() {
-        return instance.get<TodolistsType[]>(``).then((res) => res.data);
+        return instance.get<TodolistType[]>(``).then((res) => res.data);
     },
     createTodolist(title: string) {
         return instance
-            .post<ResponseType<{ item: TodolistsType }>>(``, { title })
+            .post<ResponseType<{ item: TodolistType }>>(``, { title })
             .then((res) => res.data);
     },
     deleteTodolist(todolistId: string) {
