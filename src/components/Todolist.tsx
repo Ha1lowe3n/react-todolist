@@ -77,7 +77,6 @@ const Todolist = React.memo(function ({
         tasks = tasks.filter((t) => t.status === TaskStatuses.Completed);
     }
 
-    console.log(tasks);
     return (
         <div>
             <h3>

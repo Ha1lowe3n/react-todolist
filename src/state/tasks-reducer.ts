@@ -106,13 +106,11 @@ export const addTaskAC = (title: string, todolistId: string) => ({
     title,
     todolistId,
 });
-
 export const removeTaskAC = (taskId: string, todolistId: string) => ({
     type: "REMOVE-TASK" as const,
     taskId,
     todolistId,
 });
-
 export const changeCheckTaskStatusAC = (
     taskId: string,
     todolistId: string
@@ -121,7 +119,6 @@ export const changeCheckTaskStatusAC = (
     taskId,
     todolistId,
 });
-
 export const changeTaskTitleAC = (
     taskId: string,
     todolistId: string,

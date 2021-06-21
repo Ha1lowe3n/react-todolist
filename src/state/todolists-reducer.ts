@@ -1,6 +1,7 @@
 import { v1 } from "uuid";
 
-import { TodolistType } from "../api/todolists-api";
+import { todolistsAPI, TodolistType } from "../api/todolists-api";
+import { ThunkType } from "./store";
 
 export type TodolistActionsType =
     | ReturnType<typeof removeTodolistAC>
@@ -85,3 +86,14 @@ export const setTodolistsAC = (todolists: TodolistType[]) => ({
     type: "SET-TODOLISTS" as const,
     todolists,
 });
+
+// thunk creators
+export const fetchTodolistsTC = (): ThunkType => async (dispatch) => {
+    try {
+        console.log("uraaaaa");
+        const data = await todolistsAPI.getTodolists();
+        dispatch(setTodolistsAC(data));
+    } catch (err) {
+        throw new Error(err);
+    }
+};
