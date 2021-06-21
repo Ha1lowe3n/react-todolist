@@ -1,6 +1,10 @@
 import { v1 } from "uuid";
 
-import { addTodolistAC, removeTodolistAC } from "./todolists-reducer";
+import {
+    addTodolistAC,
+    removeTodolistAC,
+    setTodolistsAC,
+} from "./todolists-reducer";
 import { TaskPriorities, TaskStatuses, TaskType } from "../api/todolists-api";
 
 export type TaskActionsType =
@@ -9,7 +13,8 @@ export type TaskActionsType =
     | ReturnType<typeof changeCheckTaskStatusAC>
     | ReturnType<typeof changeTaskTitleAC>
     | ReturnType<typeof addTodolistAC>
-    | ReturnType<typeof removeTodolistAC>;
+    | ReturnType<typeof removeTodolistAC>
+    | ReturnType<typeof setTodolistsAC>;
 
 export type TaskStateType = {
     [key: string]: Array<TaskType>;
@@ -84,6 +89,12 @@ export const tasksReducer = (
             delete newState[action.id];
             return newState;
         }
+        case "SET-TODOLISTS":
+            const newState = { ...state };
+            action.todolists.forEach((tl) => {
+                newState[tl.id] = [];
+            });
+            return newState;
         default:
             return state;
     }

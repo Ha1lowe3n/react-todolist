@@ -6,7 +6,8 @@ export type TodolistActionsType =
     | ReturnType<typeof removeTodolistAC>
     | ReturnType<typeof addTodolistAC>
     | ReturnType<typeof changeTodolistTitleAC>
-    | ReturnType<typeof changeTodolistFilterAC>;
+    | ReturnType<typeof changeTodolistFilterAC>
+    | ReturnType<typeof setTodolistsAC>;
 
 export type FilterValuesType = "all" | "active" | "completed";
 
@@ -44,6 +45,11 @@ export const todolistsReducer = (
             if (todolist) todolist.filter = action.filter;
             return [...state];
         }
+        case "SET-TODOLISTS":
+            return action.todolists.map((tl) => ({
+                ...tl,
+                filter: "all",
+            }));
         default:
             return state;
     }
@@ -54,13 +60,11 @@ export const removeTodolistAC = (todolistId: string) => ({
     type: "REMOVE-TODOLIST" as const,
     id: todolistId,
 });
-
 export const addTodolistAC = (title: string) => ({
     type: "ADD-TODOLIST" as const,
     title,
     id: v1(),
 });
-
 export const changeTodolistTitleAC = (
     todolistId: string,
     newTodolistTitle: string
@@ -69,7 +73,6 @@ export const changeTodolistTitleAC = (
     id: todolistId,
     title: newTodolistTitle,
 });
-
 export const changeTodolistFilterAC = (
     todolistId: string,
     newFilter: FilterValuesType
@@ -77,4 +80,8 @@ export const changeTodolistFilterAC = (
     type: "CHANGE-TODOLIST-FILTER" as const,
     id: todolistId,
     filter: newFilter,
+});
+export const setTodolistsAC = (todolists: TodolistType[]) => ({
+    type: "SET-TODOLISTS" as const,
+    todolists,
 });
