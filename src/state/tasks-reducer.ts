@@ -5,7 +5,13 @@ import {
     removeTodolistAC,
     setTodolistsAC,
 } from "./todolists-reducer";
-import { TaskPriorities, TaskStatuses, TaskType } from "../api/todolists-api";
+import {
+    TaskPriorities,
+    tasksAPI,
+    TaskStatuses,
+    TaskType,
+} from "../api/todolists-api";
+import { ThunkType } from "./store";
 
 export type TaskActionsType =
     | ReturnType<typeof addTaskAC>
@@ -14,7 +20,8 @@ export type TaskActionsType =
     | ReturnType<typeof changeTaskTitleAC>
     | ReturnType<typeof addTodolistAC>
     | ReturnType<typeof removeTodolistAC>
-    | ReturnType<typeof setTodolistsAC>;
+    | ReturnType<typeof setTodolistsAC>
+    | ReturnType<typeof setTasksAC>;
 
 export type TaskStateType = {
     [key: string]: Array<TaskType>;
@@ -95,6 +102,11 @@ export const tasksReducer = (
                 newState[tl.id] = [];
             });
             return newState;
+        case "SET-TASKS":
+            return {
+                ...state,
+                [action.todolistId]: action.tasks,
+            };
         default:
             return state;
     }
@@ -129,3 +141,20 @@ export const changeTaskTitleAC = (
     todolistId,
     newTitle,
 });
+export const setTasksAC = (tasks: TaskType[], todolistId: string) => ({
+    type: "SET-TASKS" as const,
+    tasks,
+    todolistId,
+});
+
+// thunk creators
+export const fetchTasksTC =
+    (todolistId: string): ThunkType =>
+    async (dispatch) => {
+        try {
+            const { items } = await tasksAPI.getTasks(todolistId);
+            dispatch(setTasksAC(items, todolistId));
+        } catch (err) {
+            throw new Error(err);
+        }
+    };

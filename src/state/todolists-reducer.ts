@@ -2,6 +2,7 @@ import { v1 } from "uuid";
 
 import { todolistsAPI, TodolistType } from "../api/todolists-api";
 import { ThunkType } from "./store";
+import { fetchTasksTC } from "./tasks-reducer";
 
 export type TodolistActionsType =
     | ReturnType<typeof removeTodolistAC>
@@ -90,9 +91,11 @@ export const setTodolistsAC = (todolists: TodolistType[]) => ({
 // thunk creators
 export const fetchTodolistsTC = (): ThunkType => async (dispatch) => {
     try {
-        console.log("uraaaaa");
-        const data = await todolistsAPI.getTodolists();
-        dispatch(setTodolistsAC(data));
+        const todolists = await todolistsAPI.getTodolists();
+        todolists.forEach((tl) => {
+            dispatch(fetchTasksTC(tl.id));
+        });
+        dispatch(setTodolistsAC(todolists));
     } catch (err) {
         throw new Error(err);
     }
