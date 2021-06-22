@@ -7,7 +7,12 @@ import EditableSpan from "./EditableSpan";
 import { TaskStatuses, TaskType } from "../api/todolists-api";
 
 export type TaskPropsType = {
-    changeCheckStatus: (taskId: string, todolistId: string) => void;
+    changeCheckStatus: (
+        taskId: string,
+        todolistId: string,
+        taskStatus: TaskStatuses,
+        taskTitle: string
+    ) => void;
     removeTask: (taskId: string, todolistId: string) => void;
     changeTaskTitle: (
         taskId: string,
@@ -25,7 +30,8 @@ const Task = React.memo(function ({
     task,
     todolistId,
 }: TaskPropsType) {
-    const onChangeInput = () => changeCheckStatus(task.id, todolistId);
+    const onChangeInput = () =>
+        changeCheckStatus(task.id, todolistId, task.status, task.title);
     const btnRemoveTask = () => removeTask(task.id, todolistId);
     const onChangeTitle = (newValue: string) => {
         changeTaskTitle(task.id, todolistId, newValue);

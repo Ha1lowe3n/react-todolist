@@ -19,11 +19,13 @@ const EditableSpan = React.memo(function ({
         setStateTitle(title);
     };
 
-    const deactivateEditMode = () => setEditMode(false);
+    const deactivateEditMode = () => {
+        setEditMode(false);
+        onChangeTitle(stateTitle);
+    };
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setStateTitle(e.currentTarget.value);
-        onChangeTitle(e.currentTarget.value);
     };
 
     return editMode ? (

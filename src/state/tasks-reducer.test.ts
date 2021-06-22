@@ -32,7 +32,7 @@ beforeEach(() => {
             order: 0,
             priority: TaskPriorities.Low,
             startDate: null,
-            todoListId: "1",
+            todoListId: todolistId1,
         },
         {
             id: "2",
@@ -44,7 +44,7 @@ beforeEach(() => {
             order: 0,
             priority: TaskPriorities.Low,
             startDate: null,
-            todoListId: "2",
+            todoListId: todolistId1,
         },
         {
             id: "3",
@@ -56,7 +56,7 @@ beforeEach(() => {
             order: 0,
             priority: TaskPriorities.Low,
             startDate: null,
-            todoListId: "3",
+            todoListId: todolistId1,
         },
     ];
 
@@ -73,7 +73,7 @@ beforeEach(() => {
                 order: 0,
                 priority: TaskPriorities.Low,
                 startDate: null,
-                todoListId: "1",
+                todoListId: todolistId2,
             },
             {
                 id: "2",
@@ -85,7 +85,7 @@ beforeEach(() => {
                 order: 0,
                 priority: TaskPriorities.Low,
                 startDate: null,
-                todoListId: "2",
+                todoListId: todolistId2,
             },
             {
                 id: "3",
@@ -97,20 +97,35 @@ beforeEach(() => {
                 order: 0,
                 priority: TaskPriorities.Low,
                 startDate: null,
-                todoListId: "3",
+                todoListId: todolistId2,
             },
         ],
     };
 });
 
 test("new task should be added in correct todolist", () => {
-    const endState = tasksReducer(startState, addTaskAC("lala", todolistId1));
+    const endState = tasksReducer(
+        startState,
+        addTaskAC({
+            id: "4",
+            title: "Vue",
+            status: TaskStatuses.New,
+            addedDate: "",
+            deadline: null,
+            description: null,
+            order: 0,
+            priority: TaskPriorities.Low,
+            startDate: null,
+            todoListId: todolistId1,
+        })
+    );
 
     expect(endState[todolistId1].length).toBe(4);
     expect(endState[todolistId2].length).toBe(3);
-    expect(endState[todolistId1][0].title).toBe("lala");
+    expect(endState[todolistId1][0].title).toBe("Vue");
     expect(endState[todolistId2][0].status).toBe(0);
     expect(endState[todolistId2][0].id).toBeDefined();
+    expect(endState[todolistId2][0].todoListId).toBeDefined();
 });
 
 test("task should be deleted from correct array", () => {

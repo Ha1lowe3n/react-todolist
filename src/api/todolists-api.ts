@@ -52,8 +52,8 @@ type GetTasksType = {
 export type UpdateTaskModelType = {
     title: string;
     description: string | null;
-    status: number;
-    priority: number;
+    status: TaskStatuses;
+    priority: TaskPriorities;
     startDate: string | null;
     deadline: string | null;
 };

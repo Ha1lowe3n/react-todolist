@@ -26,13 +26,13 @@ import {
     TodolistDomainType,
 } from "./state/todolists-reducer";
 import {
-    addTaskAC,
-    changeCheckTaskStatusAC,
-    changeTaskTitleAC,
-    removeTaskAC,
+    addTaskTC,
+    deleteTaskTC,
     TaskStateType,
+    updateTaskTC,
 } from "./state/tasks-reducer";
 import { AppStateType } from "./state/store";
+import { TaskStatuses } from "./api/todolists-api";
 
 function AppWithRedux() {
     const dispatch = useDispatch();
@@ -56,21 +56,38 @@ function AppWithRedux() {
 
     const addTask = useCallback(
         (title: string, todolistId: string) => {
-            dispatch(addTaskAC(title, todolistId));
+            dispatch(addTaskTC(todolistId, title));
         },
         [dispatch]
     );
 
     const removeTask = useCallback(
         (taskId: string, todolistId: string) => {
-            dispatch(removeTaskAC(taskId, todolistId));
+            dispatch(deleteTaskTC(todolistId, taskId));
         },
         [dispatch]
     );
 
     const changeCheckStatus = useCallback(
-        (taskId: string, todolistId: string) => {
-            dispatch(changeCheckTaskStatusAC(taskId, todolistId));
+        (
+            taskId: string,
+            todolistId: string,
+            taskStatus: TaskStatuses,
+            taskTitle: string
+        ) => {
+            dispatch(
+                updateTaskTC(todolistId, taskId, {
+                    title: taskTitle,
+                    description: null,
+                    status:
+                        taskStatus === TaskStatuses.New
+                            ? TaskStatuses.Completed
+                            : TaskStatuses.New,
+                    priority: 0,
+                    startDate: null,
+                    deadline: null,
+                })
+            );
         },
         [dispatch]
     );
@@ -93,7 +110,16 @@ function AppWithRedux() {
 
     const changeTaskTitle = useCallback(
         (taskId: string, todolistId: string, newValue: string) => {
-            dispatch(changeTaskTitleAC(taskId, todolistId, newValue));
+            dispatch(
+                updateTaskTC(todolistId, taskId, {
+                    title: newValue,
+                    description: null,
+                    status: 0,
+                    priority: 0,
+                    startDate: null,
+                    deadline: null,
+                })
+            );
         },
         [dispatch]
     );

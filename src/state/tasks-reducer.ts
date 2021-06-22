@@ -1,15 +1,13 @@
-import { v1 } from "uuid";
-
 import {
     addTodolistAC,
     removeTodolistAC,
     setTodolistsAC,
 } from "./todolists-reducer";
 import {
-    TaskPriorities,
     tasksAPI,
     TaskStatuses,
     TaskType,
+    UpdateTaskModelType,
 } from "../api/todolists-api";
 import { ThunkType } from "./store";
 
@@ -37,20 +35,9 @@ export const tasksReducer = (
         case "ADD-TASK":
             return {
                 ...state,
-                [action.todolistId]: [
-                    {
-                        id: v1(),
-                        title: action.title,
-                        status: TaskStatuses.New,
-                        addedDate: "",
-                        deadline: null,
-                        description: null,
-                        order: 0,
-                        priority: TaskPriorities.Low,
-                        startDate: null,
-                        todoListId: action.todolistId,
-                    },
-                    ...state[action.todolistId],
+                [action.task.todoListId]: [
+                    action.task,
+                    ...state[action.task.todoListId],
                 ],
             };
         case "REMOVE-TASK":
@@ -113,10 +100,9 @@ export const tasksReducer = (
 };
 
 // action creators
-export const addTaskAC = (title: string, todolistId: string) => ({
+export const addTaskAC = (task: TaskType) => ({
     type: "ADD-TASK" as const,
-    title,
-    todolistId,
+    task,
 });
 export const removeTaskAC = (taskId: string, todolistId: string) => ({
     type: "REMOVE-TASK" as const,
@@ -154,6 +140,44 @@ export const fetchTasksTC =
         try {
             const { items } = await tasksAPI.getTasks(todolistId);
             dispatch(setTasksAC(items, todolistId));
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+export const deleteTaskTC =
+    (todolistId: string, taskId: string): ThunkType =>
+    async (dispatch) => {
+        try {
+            await tasksAPI.deleteTask(todolistId, taskId);
+            dispatch(removeTaskAC(taskId, todolistId));
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+export const addTaskTC =
+    (todolistId: string, title: string): ThunkType =>
+    async (dispatch) => {
+        try {
+            const {
+                data: { item },
+            } = await tasksAPI.createTask(todolistId, title);
+            dispatch(addTaskAC(item));
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+export const updateTaskTC =
+    (
+        todolistId: string,
+        taskId: string,
+        model: UpdateTaskModelType
+    ): ThunkType =>
+    async (dispatch) => {
+        try {
+            // await tasksAPI.updateTask(todolistId, taskId, model);
+            // dispatch(changeTaskTitleAC(taskId, todolistId, model.title));
+            // dispatch(changeCheckTaskStatusAC(taskId, todolistId));
+            console.log("update task");
         } catch (err) {
             throw new Error(err);
         }
