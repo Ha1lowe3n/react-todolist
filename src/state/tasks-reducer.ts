@@ -4,18 +4,27 @@ import {
     setTodolistsAC,
 } from "./todolists-reducer";
 import {
+    TaskPriorities,
     tasksAPI,
     TaskStatuses,
     TaskType,
-    UpdateTaskModelType,
 } from "../api/todolists-api";
-import { ThunkType } from "./store";
+import { AppStateType, ThunkType } from "./store";
+
+// special type for universal update task
+type UpdateTaskDomainModelType = {
+    title?: string;
+    description?: string | null;
+    status?: TaskStatuses;
+    priority?: TaskPriorities;
+    startDate?: string | null;
+    deadline?: string | null;
+};
 
 export type TaskActionsType =
     | ReturnType<typeof addTaskAC>
     | ReturnType<typeof removeTaskAC>
-    | ReturnType<typeof changeCheckTaskStatusAC>
-    | ReturnType<typeof changeTaskTitleAC>
+    | ReturnType<typeof updateTaskAC>
     | ReturnType<typeof addTodolistAC>
     | ReturnType<typeof removeTodolistAC>
     | ReturnType<typeof setTodolistsAC>
@@ -49,33 +58,21 @@ export const tasksReducer = (
                     ),
                 ],
             };
-        case "CHANGE-CHECK-TASK-STATUS":
+        case "UPDATE-TASK":
             return {
                 ...state,
                 [action.todolistId]: state[action.todolistId].map((task) => {
                     return task.id === action.taskId
                         ? {
                               ...task,
-                              status:
-                                  task.status === TaskStatuses.New
-                                      ? TaskStatuses.Completed
-                                      : TaskStatuses.New,
+                              ...action.model,
                           }
-                        : task;
-                }),
-            };
-        case "CHANGE-TASK-TITLE":
-            return {
-                ...state,
-                [action.todolistId]: state[action.todolistId].map((task) => {
-                    return task.id === action.taskId
-                        ? { ...task, title: action.newTitle }
                         : task;
                 }),
             };
         case "ADD-TODOLIST": {
             const newState = { ...state };
-            newState[action.id] = [];
+            newState[action.todolist.id] = [];
             return newState;
         }
         case "REMOVE-TODOLIST": {
@@ -109,23 +106,15 @@ export const removeTaskAC = (taskId: string, todolistId: string) => ({
     taskId,
     todolistId,
 });
-export const changeCheckTaskStatusAC = (
-    taskId: string,
-    todolistId: string
-) => ({
-    type: "CHANGE-CHECK-TASK-STATUS" as const,
-    taskId,
-    todolistId,
-});
-export const changeTaskTitleAC = (
+export const updateTaskAC = (
     taskId: string,
     todolistId: string,
-    newTitle: string
+    model: UpdateTaskDomainModelType
 ) => ({
-    type: "CHANGE-TASK-TITLE" as const,
+    type: "UPDATE-TASK" as const,
     taskId,
     todolistId,
-    newTitle,
+    model,
 });
 export const setTasksAC = (tasks: TaskType[], todolistId: string) => ({
     type: "SET-TASKS" as const,
@@ -170,14 +159,29 @@ export const updateTaskTC =
     (
         todolistId: string,
         taskId: string,
-        model: UpdateTaskModelType
+        model: UpdateTaskDomainModelType
     ): ThunkType =>
-    async (dispatch) => {
+    async (dispatch, getState: () => AppStateType) => {
         try {
-            // await tasksAPI.updateTask(todolistId, taskId, model);
-            // dispatch(changeTaskTitleAC(taskId, todolistId, model.title));
-            // dispatch(changeCheckTaskStatusAC(taskId, todolistId));
-            console.log("update task");
+            const state = getState();
+            const task = state.tasks[todolistId].find(
+                (task) => task.id === taskId
+            );
+
+            if (task) {
+                const apiModel = {
+                    title: task.title,
+                    description: task.description,
+                    status: task.status,
+                    priority: task.priority,
+                    startDate: task.startDate,
+                    deadline: task.deadline,
+                    ...model,
+                };
+
+                await tasksAPI.updateTask(todolistId, taskId, apiModel);
+                dispatch(updateTaskAC(taskId, todolistId, apiModel));
+            }
         } catch (err) {
             throw new Error(err);
         }

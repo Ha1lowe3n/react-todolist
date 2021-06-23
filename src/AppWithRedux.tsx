@@ -17,12 +17,12 @@ import { Menu } from "@material-ui/icons";
 import Todolist from "./components/Todolist";
 import AddItemForm from "./components/AddItemForm";
 import {
-    addTodolistAC,
     changeTodolistFilterAC,
-    changeTodolistTitleAC,
+    changeTodolistTitleTC,
+    createTodolistTC,
+    deleteTodolistTC,
     fetchTodolistsTC,
     FilterValuesType,
-    removeTodolistAC,
     TodolistDomainType,
 } from "./state/todolists-reducer";
 import {
@@ -69,23 +69,13 @@ function AppWithRedux() {
     );
 
     const changeCheckStatus = useCallback(
-        (
-            taskId: string,
-            todolistId: string,
-            taskStatus: TaskStatuses,
-            taskTitle: string
-        ) => {
+        (taskId: string, todolistId: string, taskStatus: TaskStatuses) => {
             dispatch(
                 updateTaskTC(todolistId, taskId, {
-                    title: taskTitle,
-                    description: null,
                     status:
                         taskStatus === TaskStatuses.New
                             ? TaskStatuses.Completed
                             : TaskStatuses.New,
-                    priority: 0,
-                    startDate: null,
-                    deadline: null,
                 })
             );
         },
@@ -94,39 +84,28 @@ function AppWithRedux() {
 
     const removeTodolist = useCallback(
         (todolistId: string) => {
-            const action = removeTodolistAC(todolistId);
-            dispatch(action);
+            dispatch(deleteTodolistTC(todolistId));
         },
         [dispatch]
     );
 
     const addTodolist = useCallback(
         (title: string) => {
-            const action = addTodolistAC(title);
-            dispatch(action);
+            dispatch(createTodolistTC(title));
         },
         [dispatch]
     );
 
     const changeTaskTitle = useCallback(
         (taskId: string, todolistId: string, newValue: string) => {
-            dispatch(
-                updateTaskTC(todolistId, taskId, {
-                    title: newValue,
-                    description: null,
-                    status: 0,
-                    priority: 0,
-                    startDate: null,
-                    deadline: null,
-                })
-            );
+            dispatch(updateTaskTC(todolistId, taskId, { title: newValue }));
         },
         [dispatch]
     );
 
     const changeStateTitleTodolist = useCallback(
         (newTitle: string, todolistId: string) => {
-            dispatch(changeTodolistTitleAC(todolistId, newTitle));
+            dispatch(changeTodolistTitleTC(todolistId, newTitle));
         },
         [dispatch]
     );

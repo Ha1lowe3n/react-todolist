@@ -1,5 +1,3 @@
-import { v1 } from "uuid";
-
 import { todolistsAPI, TodolistType } from "../api/todolists-api";
 import { ThunkType } from "./store";
 import { fetchTasksTC } from "./tasks-reducer";
@@ -27,16 +25,7 @@ export const todolistsReducer = (
         case "REMOVE-TODOLIST":
             return state.filter((tl) => tl.id !== action.id);
         case "ADD-TODOLIST":
-            return [
-                {
-                    id: action.id,
-                    title: action.title,
-                    filter: "all",
-                    addedDate: "",
-                    order: 0,
-                },
-                ...state,
-            ];
+            return [{ ...action.todolist, filter: "all" }, ...state];
         case "CHANGE-TODOLIST-TITLE": {
             const todolist = state.find((t) => t.id === action.id);
             if (todolist) todolist.title = action.title;
@@ -62,10 +51,9 @@ export const removeTodolistAC = (todolistId: string) => ({
     type: "REMOVE-TODOLIST" as const,
     id: todolistId,
 });
-export const addTodolistAC = (title: string) => ({
+export const addTodolistAC = (todolist: TodolistType) => ({
     type: "ADD-TODOLIST" as const,
-    title,
-    id: v1(),
+    todolist,
 });
 export const changeTodolistTitleAC = (
     todolistId: string,
@@ -100,3 +88,35 @@ export const fetchTodolistsTC = (): ThunkType => async (dispatch) => {
         throw new Error(err);
     }
 };
+export const deleteTodolistTC =
+    (todolistId: string): ThunkType =>
+    async (dispatch) => {
+        try {
+            await todolistsAPI.deleteTodolist(todolistId);
+            dispatch(removeTodolistAC(todolistId));
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+export const createTodolistTC =
+    (title: string): ThunkType =>
+    async (dispatch) => {
+        try {
+            const {
+                data: { item },
+            } = await todolistsAPI.createTodolist(title);
+            dispatch(addTodolistAC(item));
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+export const changeTodolistTitleTC =
+    (todolistId: string, newTodolistTitle: string): ThunkType =>
+    async (dispatch) => {
+        try {
+            await todolistsAPI.updateTodolist(todolistId, newTodolistTitle);
+            dispatch(changeTodolistTitleAC(todolistId, newTodolistTitle));
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
