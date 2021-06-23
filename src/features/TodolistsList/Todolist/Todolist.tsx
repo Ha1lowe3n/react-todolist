@@ -3,11 +3,11 @@ import React, { MouseEvent, useCallback } from "react";
 import { Button, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 
-import AddItemForm from "./AddItemForm";
-import EditableSpan from "./EditableSpan";
-import Task from "./Task";
-import { FilterValuesType } from "../state/todolists-reducer";
-import { TaskStatuses, TaskType } from "../api/todolists-api";
+import AddItemForm from "../../../components/AddItemForm";
+import EditableSpan from "../../../components/EditableSpan";
+import Task from "../../../components/Task";
+import { FilterValuesType } from "../../../state/todolists-reducer";
+import { TaskStatuses, TaskType } from "../../../api/todolists-api";
 
 type PropsType = {
     todolistId: string;

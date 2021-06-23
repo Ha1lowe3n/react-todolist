@@ -70,27 +70,22 @@ export const tasksReducer = (
                         : task;
                 }),
             };
-        case "ADD-TODOLIST": {
-            const newState = { ...state };
-            newState[action.todolist.id] = [];
-            return newState;
-        }
+        case "ADD-TODOLIST":
+            return { ...state, [action.todolist.id]: [] };
         case "REMOVE-TODOLIST": {
             const newState = { ...state };
             delete newState[action.id];
             return newState;
         }
-        case "SET-TODOLISTS":
+        case "SET-TODOLISTS": {
             const newState = { ...state };
             action.todolists.forEach((tl) => {
                 newState[tl.id] = [];
             });
             return newState;
+        }
         case "SET-TASKS":
-            return {
-                ...state,
-                [action.todolistId]: action.tasks,
-            };
+            return { ...state, [action.todolistId]: action.tasks };
         default:
             return state;
     }
