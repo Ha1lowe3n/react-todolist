@@ -8,8 +8,9 @@ import {
     tasksAPI,
     TaskStatuses,
     TaskType,
-} from "../api/todolists-api";
-import { AppStateType, ThunkType } from "./store";
+} from "../../api/todolists-api";
+import { AppRootStateType, ThunkType } from "../store";
+import { appActions } from "./app-reducer";
 
 // special type for universal update task
 type UpdateTaskDomainModelType = {
@@ -118,12 +119,15 @@ export const setTasksAC = (tasks: TaskType[], todolistId: string) => ({
 });
 
 // thunk creators
+const { setStatusAC, setErrorAC } = appActions;
+
 export const fetchTasksTC =
     (todolistId: string): ThunkType =>
     async (dispatch) => {
         try {
             const { items } = await tasksAPI.getTasks(todolistId);
             dispatch(setTasksAC(items, todolistId));
+            dispatch(setStatusAC("succeeded"));
         } catch (err) {
             throw new Error(err);
         }
@@ -144,8 +148,19 @@ export const addTaskTC =
         try {
             const {
                 data: { item },
+                resultCode,
+                messages,
             } = await tasksAPI.createTask(todolistId, title);
-            dispatch(addTaskAC(item));
+
+            if (resultCode === 0) {
+                dispatch(addTaskAC(item));
+            } else {
+                if (messages.length) {
+                    dispatch(setErrorAC(messages[0]));
+                } else {
+                    dispatch(setErrorAC("Some error occurred"));
+                }
+            }
         } catch (err) {
             throw new Error(err);
         }
@@ -156,7 +171,7 @@ export const updateTaskTC =
         taskId: string,
         model: UpdateTaskDomainModelType
     ): ThunkType =>
-    async (dispatch, getState: () => AppStateType) => {
+    async (dispatch, getState: () => AppRootStateType) => {
         try {
             const state = getState();
             const task = state.tasks[todolistId].find(

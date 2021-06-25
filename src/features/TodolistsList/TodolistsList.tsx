@@ -11,7 +11,7 @@ import {
     fetchTodolistsTC,
     FilterValuesType,
     TodolistDomainType,
-} from "../../state/todolists-reducer";
+} from "../../state/reducers/todolists-reducer";
 import AddItemForm from "../../components/AddItemForm";
 import Todolist from "./Todolist/Todolist";
 import {
@@ -19,16 +19,16 @@ import {
     deleteTaskTC,
     TaskStateType,
     updateTaskTC,
-} from "../../state/tasks-reducer";
+} from "../../state/reducers/tasks-reducer";
 import { TaskStatuses } from "../../api/todolists-api";
-import { AppStateType } from "../../state/store";
+import { AppRootStateType } from "../../state/store";
 
 const TodolistsList: React.FC = () => {
     const dispatch = useDispatch();
-    const todolists = useSelector<AppStateType, Array<TodolistDomainType>>(
+    const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(
         (state) => state.todolists
     );
-    const tasks = useSelector<AppStateType, TaskStateType>(
+    const tasks = useSelector<AppRootStateType, TaskStateType>(
         (state) => state.tasks
     );
 

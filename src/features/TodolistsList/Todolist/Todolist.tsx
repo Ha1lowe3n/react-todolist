@@ -6,7 +6,7 @@ import { Delete } from "@material-ui/icons";
 import AddItemForm from "../../../components/AddItemForm";
 import EditableSpan from "../../../components/EditableSpan";
 import Task from "../../../components/Task";
-import { FilterValuesType } from "../../../state/todolists-reducer";
+import { FilterValuesType } from "../../../state/reducers/todolists-reducer";
 import { TaskStatuses, TaskType } from "../../../api/todolists-api";
 
 type PropsType = {

@@ -1,7 +1,9 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from "react";
+import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
 
 import { IconButton, TextField } from "@material-ui/core";
 import { ControlPoint } from "@material-ui/icons";
+import { useSelector } from "react-redux";
+import { AppRootStateType } from "../state/store";
 
 export type AddItemFormPropsType = {
     addItem: (title: string) => void;
@@ -11,14 +13,22 @@ const AddItemForm = React.memo(function ({ addItem }: AddItemFormPropsType) {
     const [newTaskTitle, setNewTaskTitle] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
 
+    useEffect(() => {
+        const clearError = setTimeout(() => {
+            setError(false);
+        }, 3500);
+
+        return () => clearTimeout(clearError);
+    }, [error]);
+
     const addTaskHandler = () => {
         if (newTaskTitle.trim() !== "") {
             addItem(newTaskTitle.trim());
-            setNewTaskTitle("");
         } else {
             setError(true);
+        }
+        if (!error) {
             setNewTaskTitle("");
-            setTimeout(() => setError(false), 3500);
         }
     };
 

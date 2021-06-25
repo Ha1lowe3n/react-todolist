@@ -1,6 +1,7 @@
-import { todolistsAPI, TodolistType } from "../api/todolists-api";
-import { ThunkType } from "./store";
+import { todolistsAPI, TodolistType } from "../../api/todolists-api";
+import { ThunkType } from "../store";
 import { fetchTasksTC } from "./tasks-reducer";
+import { appActions, RequestStatusType } from "./app-reducer";
 
 export type TodolistActionsType =
     | ReturnType<typeof removeTodolistAC>
@@ -13,6 +14,7 @@ export type FilterValuesType = "all" | "active" | "completed";
 
 export type TodolistDomainType = TodolistType & {
     filter: FilterValuesType;
+    entityStatus: RequestStatusType;
 };
 
 const initialState: Array<TodolistDomainType> = [];
@@ -25,7 +27,10 @@ export const todolistsReducer = (
         case "REMOVE-TODOLIST":
             return state.filter((tl) => tl.id !== action.id);
         case "ADD-TODOLIST":
-            return [{ ...action.todolist, filter: "all" }, ...state];
+            return [
+                { ...action.todolist, filter: "all", entityStatus: "idle" },
+                ...state,
+            ];
         case "CHANGE-TODOLIST-TITLE":
             return state.map((tl) =>
                 tl.id === action.id ? { ...tl, title: action.title } : tl
@@ -39,6 +44,7 @@ export const todolistsReducer = (
             return action.todolists.map((tl) => ({
                 ...tl,
                 filter: "all",
+                entityStatus: "idle",
             }));
         default:
             return state;
@@ -76,11 +82,14 @@ export const setTodolistsAC = (todolists: TodolistType[]) => ({
 });
 
 // thunk creators
+const { setStatusAC } = appActions;
+
 export const fetchTodolistsTC = (): ThunkType => async (dispatch) => {
     try {
+        dispatch(setStatusAC("loading"));
         const todolists = await todolistsAPI.getTodolists();
-        todolists.forEach((tl) => dispatch(fetchTasksTC(tl.id)));
         dispatch(setTodolistsAC(todolists));
+        todolists.forEach((tl) => dispatch(fetchTasksTC(tl.id)));
     } catch (err) {
         throw new Error(err);
     }
@@ -99,10 +108,12 @@ export const createTodolistTC =
     (title: string): ThunkType =>
     async (dispatch) => {
         try {
+            dispatch(setStatusAC("loading"));
             const {
                 data: { item },
             } = await todolistsAPI.createTodolist(title);
             dispatch(addTodolistAC(item));
+            dispatch(setStatusAC("succeeded"));
         } catch (err) {
             throw new Error(err);
         }

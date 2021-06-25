@@ -3,20 +3,22 @@ import { Provider } from "react-redux";
 import { combineReducers, createStore } from "redux";
 import { v1 } from "uuid";
 
-import { tasksReducer } from "../state/tasks-reducer";
-import { todolistsReducer } from "../state/todolists-reducer";
-import { AppStateType } from "../state/store";
+import { tasksReducer } from "../state/reducers/tasks-reducer";
+import { todolistsReducer } from "../state/reducers/todolists-reducer";
+import { AppRootStateType } from "../state/store";
 import { TaskPriorities, TaskStatuses } from "../api/todolists-api";
+import { appReducer } from "../state/reducers/app-reducer";
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,
     todolists: todolistsReducer,
+    app: appReducer,
 });
 
 const todolistId1: string = v1();
 const todolistId2: string = v1();
 
-const initialGlobalState: AppStateType = {
+const initialGlobalState: AppRootStateType = {
     todolists: [
         {
             id: todolistId1,
@@ -24,6 +26,7 @@ const initialGlobalState: AppStateType = {
             filter: "all",
             addedDate: "",
             order: 0,
+            entityStatus: "idle",
         },
         {
             id: todolistId2,
@@ -31,6 +34,7 @@ const initialGlobalState: AppStateType = {
             filter: "all",
             addedDate: "",
             order: 0,
+            entityStatus: "idle",
         },
     ],
     tasks: {
@@ -86,6 +90,10 @@ const initialGlobalState: AppStateType = {
                 todoListId: "2",
             },
         ],
+    },
+    app: {
+        status: "idle",
+        error: null,
     },
 };
 
