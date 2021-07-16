@@ -2,14 +2,16 @@ import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
 
 import { IconButton, TextField } from "@material-ui/core";
 import { ControlPoint } from "@material-ui/icons";
-import { useSelector } from "react-redux";
-import { AppRootStateType } from "../state/store";
 
 export type AddItemFormPropsType = {
     addItem: (title: string) => void;
+    disabled?: boolean;
 };
 
-const AddItemForm = React.memo(function ({ addItem }: AddItemFormPropsType) {
+const AddItemForm = React.memo(function ({
+    addItem,
+    disabled,
+}: AddItemFormPropsType) {
     const [newTaskTitle, setNewTaskTitle] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
 
@@ -51,12 +53,14 @@ const AddItemForm = React.memo(function ({ addItem }: AddItemFormPropsType) {
                 onChange={onChangeHandler}
                 onKeyPress={onKeyPressHandler}
                 helperText={error && "Title is empty"}
+                disabled={disabled}
             />
             <IconButton
                 style={{ padding: "16px" }}
                 aria-label="delete"
                 onClick={addTaskHandler}
                 color={"primary"}
+                disabled={disabled}
             >
                 <ControlPoint />
             </IconButton>

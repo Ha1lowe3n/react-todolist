@@ -6,12 +6,14 @@ import { Delete } from "@material-ui/icons";
 import AddItemForm from "../../../components/AddItemForm";
 import EditableSpan from "../../../components/EditableSpan";
 import Task from "../../../components/Task";
-import { FilterValuesType } from "../../../state/reducers/todolists-reducer";
+import {
+    FilterValuesType,
+    TodolistDomainType,
+} from "../../../state/reducers/todolists-reducer";
 import { TaskStatuses, TaskType } from "../../../api/todolists-api";
 
 type PropsType = {
-    todolistId: string;
-    title: string;
+    todolist: TodolistDomainType;
     tasks: Array<TaskType>;
     changeTodoListFilter: (filterValue: FilterValuesType, id: string) => void;
     removeTask: (id: string, todolistId: string) => void;
@@ -33,8 +35,7 @@ type PropsType = {
 };
 
 const Todolist = React.memo(function ({
-    todolistId,
-    title,
+    todolist,
     tasks,
     changeTodoListFilter,
     removeTask,
@@ -49,30 +50,30 @@ const Todolist = React.memo(function ({
         (e: MouseEvent<HTMLButtonElement>) => {
             switch (e.currentTarget.childNodes[0].textContent) {
                 case "Active":
-                    return changeTodoListFilter("active", todolistId);
+                    return changeTodoListFilter("active", todolist.id);
                 case "Completed":
-                    return changeTodoListFilter("completed", todolistId);
+                    return changeTodoListFilter("completed", todolist.id);
                 default:
-                    return changeTodoListFilter("all", todolistId);
+                    return changeTodoListFilter("all", todolist.id);
             }
         },
-        [changeTodoListFilter, todolistId]
+        [changeTodoListFilter, todolist.id]
     );
 
-    const deleteTodolist = () => removeTodolist(todolistId);
+    const deleteTodolist = () => removeTodolist(todolist.id);
 
     const addItem = useCallback(
         (title: string) => {
-            addTask(title, todolistId);
+            addTask(title, todolist.id);
         },
-        [addTask, todolistId]
+        [addTask, todolist.id]
     );
 
     const changeTodolistTitle = useCallback(
         (newTitle: string) => {
-            changeStateTitleTodolist(newTitle, todolistId);
+            changeStateTitleTodolist(newTitle, todolist.id);
         },
-        [changeStateTitleTodolist, todolistId]
+        [changeStateTitleTodolist, todolist.id]
     );
 
     if (todoListFilter === "active") {
@@ -86,14 +87,21 @@ const Todolist = React.memo(function ({
         <div>
             <h3>
                 <EditableSpan
-                    title={title}
+                    title={todolist.title}
                     onChangeTitle={changeTodolistTitle}
                 />{" "}
-                <IconButton aria-label="delete" onClick={deleteTodolist}>
+                <IconButton
+                    aria-label="delete"
+                    onClick={deleteTodolist}
+                    disabled={todolist.entityStatus === "loading"}
+                >
                     <Delete />
                 </IconButton>
             </h3>
-            <AddItemForm addItem={addItem} />
+            <AddItemForm
+                addItem={addItem}
+                disabled={todolist.entityStatus === "loading"}
+            />
 
             <ul className={"todolists_tasks"}>
                 {tasks.map((task) => {
@@ -104,7 +112,7 @@ const Todolist = React.memo(function ({
                             removeTask={removeTask}
                             changeTaskTitle={changeTaskTitle}
                             task={task}
-                            todolistId={todolistId}
+                            todolistId={todolist.id}
                         />
                     );
                 })}

@@ -9,7 +9,9 @@ import {
     TodolistDomainType,
     todolistsReducer,
     setTodolistsAC,
+    changeTodolistEntityStatusAC,
 } from "./todolists-reducer";
+import { RequestStatusType } from "./app-reducer";
 
 let todolistId1: string;
 let todolistId2: string;
@@ -27,6 +29,7 @@ beforeEach(() => {
             filter: "all",
             addedDate: "",
             order: 0,
+            entityStatus: "idle",
         },
         {
             id: todolistId2,
@@ -34,6 +37,7 @@ beforeEach(() => {
             filter: "all",
             addedDate: "",
             order: 0,
+            entityStatus: "idle",
         },
     ];
 });
@@ -86,6 +90,18 @@ test("correct filter of todolist should be changed", () => {
 
     expect(endState[0].filter).toBe("all");
     expect(endState[1].filter).toBe(newFilter);
+});
+
+test("correct entity status of todolist should be changed", () => {
+    const newStatus: RequestStatusType = "loading";
+
+    const endState = todolistsReducer(
+        startState,
+        changeTodolistEntityStatusAC(todolistId2, newStatus)
+    );
+
+    expect(endState[0].entityStatus).toBe("idle");
+    expect(endState[1].entityStatus).toBe("loading");
 });
 
 test("todolists should be set to the state", () => {

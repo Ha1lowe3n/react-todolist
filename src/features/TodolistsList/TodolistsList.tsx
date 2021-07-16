@@ -23,7 +23,11 @@ import {
 import { TaskStatuses } from "../../api/todolists-api";
 import { AppRootStateType } from "../../state/store";
 
-const TodolistsList: React.FC = () => {
+type TodolistsListPropsType = {
+    demo?: boolean;
+};
+
+const TodolistsList: React.FC<TodolistsListPropsType> = ({ demo = false }) => {
     const dispatch = useDispatch();
     const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(
         (state) => state.todolists
@@ -33,8 +37,9 @@ const TodolistsList: React.FC = () => {
     );
 
     useEffect(() => {
+        if (demo) return;
         dispatch(fetchTodolistsTC());
-    }, [dispatch]);
+    }, [dispatch, demo]);
 
     const changeTodoListFilter = useCallback(
         (filterValue: FilterValuesType, todolistId: string) => {
@@ -114,8 +119,7 @@ const TodolistsList: React.FC = () => {
                         <Grid item key={tl.id}>
                             <Paper style={{ padding: "10px" }} elevation={3}>
                                 <Todolist
-                                    todolistId={tl.id}
-                                    title={tl.title}
+                                    todolist={tl}
                                     tasks={tasks[tl.id]}
                                     changeTodoListFilter={changeTodoListFilter}
                                     addTask={addTask}

@@ -18,7 +18,11 @@ import { ErrorSnackbar } from "../components/ErrorSnackbar";
 import { AppRootStateType } from "../state/store";
 import { RequestStatusType } from "../state/reducers/app-reducer";
 
-function App() {
+type AppPropsType = {
+    demo?: boolean;
+};
+
+function App({ demo = false }: AppPropsType) {
     const status = useSelector<AppRootStateType, RequestStatusType>(
         (state) => state.app.status
     );
@@ -46,7 +50,7 @@ function App() {
             </AppBar>
 
             <Container fixed>
-                <TodolistsList />
+                <TodolistsList demo={demo} />
             </Container>
         </div>
     );
