@@ -2,6 +2,7 @@ import { todolistsAPI, TodolistType } from "../../api/todolists-api";
 import { ThunkType } from "../store";
 import { fetchTasksTC } from "./tasks-reducer";
 import { appActions, RequestStatusType } from "./app-reducer";
+import { handleServerNetworkError } from "../../utils/error-handle";
 
 export type TodolistActionsType =
     | ReturnType<typeof removeTodolistAC>
@@ -105,7 +106,7 @@ export const fetchTodolistsTC = (): ThunkType => async (dispatch) => {
         dispatch(setTodolistsAC(todolists));
         todolists.forEach((tl) => dispatch(fetchTasksTC(tl.id)));
     } catch (err) {
-        throw new Error(err);
+        handleServerNetworkError(err.message, dispatch);
     }
 };
 export const deleteTodolistTC =
@@ -120,7 +121,7 @@ export const deleteTodolistTC =
             dispatch(removeTodolistAC(todolistId));
             dispatch(setStatusAC("succeeded"));
         } catch (err) {
-            throw new Error(err);
+            handleServerNetworkError(err.message, dispatch);
         }
     };
 export const createTodolistTC =
@@ -134,7 +135,7 @@ export const createTodolistTC =
             dispatch(addTodolistAC(item));
             dispatch(setStatusAC("succeeded"));
         } catch (err) {
-            throw new Error(err);
+            handleServerNetworkError(err.message, dispatch);
         }
     };
 export const changeTodolistTitleTC =
@@ -146,6 +147,6 @@ export const changeTodolistTitleTC =
             dispatch(changeTodolistTitleAC(todolistId, newTodolistTitle));
             dispatch(setStatusAC("succeeded"));
         } catch (err) {
-            throw new Error(err);
+            handleServerNetworkError(err.message, dispatch);
         }
     };
