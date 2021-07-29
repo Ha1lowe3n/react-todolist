@@ -11,9 +11,19 @@ import {
     TextField,
     Button,
     Grid,
+    makeStyles,
 } from "@material-ui/core";
 
+const useStyles = makeStyles({
+    field: {
+        height: 70,
+        marginBottom: 0,
+    },
+});
+
 const Login: React.FC = () => {
+    const classes = useStyles();
+
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -31,11 +41,6 @@ const Login: React.FC = () => {
             alert(JSON.stringify(values));
         },
     });
-
-    const errorField = (
-        value: boolean | undefined,
-        error: string | undefined
-    ) => (value && error ? <div style={{ color: "red" }}>{error}</div> : null);
 
     return (
         <Grid container justify="center">
@@ -60,25 +65,23 @@ const Login: React.FC = () => {
                         </FormLabel>
                         <FormGroup>
                             <TextField
+                                className={classes.field}
                                 label="Email"
                                 margin="normal"
                                 {...formik.getFieldProps("email")}
+                                helperText={formik.errors.email}
+                                error={!!formik.errors.email}
                             />
-                            {errorField(
-                                formik.touched.email,
-                                formik.errors.email
-                            )}
 
                             <TextField
+                                className={classes.field}
                                 type="password"
                                 label="Password"
                                 margin="normal"
                                 {...formik.getFieldProps("password")}
+                                helperText={formik.errors.password}
+                                error={!!formik.errors.password}
                             />
-                            {errorField(
-                                formik.touched.password,
-                                formik.errors.password
-                            )}
 
                             <FormControlLabel
                                 label={"Remember me"}
