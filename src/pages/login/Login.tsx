@@ -1,4 +1,6 @@
 import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import {
     Checkbox,
@@ -12,44 +14,91 @@ import {
 } from "@material-ui/core";
 
 const Login: React.FC = () => {
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+            rememberMe: false,
+        },
+        validationSchema: Yup.object({
+            email: Yup.string()
+                .email("Invalid email address")
+                .required("Please Enter your Email"),
+            password: Yup.string().required("Please Enter your password"),
+            rememberMe: Yup.boolean(),
+        }),
+        onSubmit: (values) => {
+            alert(JSON.stringify(values));
+        },
+    });
+
+    const errorField = (
+        value: boolean | undefined,
+        error: string | undefined
+    ) => (value && error ? <div style={{ color: "red" }}>{error}</div> : null);
+
     return (
         <Grid container justify="center">
             <Grid style={{ flexBasis: "auto", marginTop: 20 }} item xs={4}>
-                <FormControl>
-                    <FormLabel>
-                        <p>
-                            To log in get registered{" "}
-                            <a
-                                href={"https://social-network.samuraijs.com/"}
-                                target={"_blank"}
+                <form onSubmit={formik.handleSubmit}>
+                    <FormControl>
+                        <FormLabel>
+                            <p>
+                                To log in get registered{" "}
+                                <a
+                                    href={
+                                        "https://social-network.samuraijs.com/"
+                                    }
+                                    target={"_blank"}
+                                >
+                                    here
+                                </a>
+                            </p>
+                            <p>or use common test account credentials:</p>
+                            <p>Email: free@samuraijs.com</p>
+                            <p>Password: free</p>
+                        </FormLabel>
+                        <FormGroup>
+                            <TextField
+                                label="Email"
+                                margin="normal"
+                                {...formik.getFieldProps("email")}
+                            />
+                            {errorField(
+                                formik.touched.email,
+                                formik.errors.email
+                            )}
+
+                            <TextField
+                                type="password"
+                                label="Password"
+                                margin="normal"
+                                {...formik.getFieldProps("password")}
+                            />
+                            {errorField(
+                                formik.touched.password,
+                                formik.errors.password
+                            )}
+
+                            <FormControlLabel
+                                label={"Remember me"}
+                                control={
+                                    <Checkbox
+                                        {...formik.getFieldProps("rememberMe")}
+                                        checked={formik.values.rememberMe}
+                                    />
+                                }
+                            />
+                            <Button
+                                type={"submit"}
+                                variant={"contained"}
+                                color={"primary"}
                             >
-                                here
-                            </a>
-                        </p>
-                        <p>or use common test account credentials:</p>
-                        <p>Email: free@samuraijs.com</p>
-                        <p>Password: free</p>
-                    </FormLabel>
-                    <FormGroup>
-                        <TextField label="Email" margin="normal" />
-                        <TextField
-                            type="password"
-                            label="Password"
-                            margin="normal"
-                        />
-                        <FormControlLabel
-                            label={"Remember me"}
-                            control={<Checkbox />}
-                        />
-                        <Button
-                            type={"submit"}
-                            variant={"contained"}
-                            color={"primary"}
-                        >
-                            Login
-                        </Button>
-                    </FormGroup>
-                </FormControl>
+                                Login
+                            </Button>
+                        </FormGroup>
+                    </FormControl>
+                </form>
             </Grid>
         </Grid>
     );
