@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { Route } from "react-router-dom";
 
 import "./App.css";
 import {
@@ -13,10 +14,11 @@ import {
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 
-import TodolistsList from "../features/TodolistsList/TodolistsList";
+import TodolistsList from "../pages/TodolistsList/TodolistsList";
 import { ErrorSnackbar } from "../components/ErrorSnackbar";
 import { AppRootStateType } from "../state/store";
 import { RequestStatusType } from "../state/reducers/app-reducer";
+import Login from "../pages/login/Login";
 
 type AppPropsType = {
     demo?: boolean;
@@ -50,7 +52,12 @@ function App({ demo = false }: AppPropsType) {
             </AppBar>
 
             <Container fixed>
-                <TodolistsList demo={demo} />
+                <Route
+                    path={"/"}
+                    render={() => <TodolistsList demo={demo} />}
+                    exact
+                />
+                <Route path={"/login"} component={Login} />
             </Container>
         </div>
     );
