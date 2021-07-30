@@ -1,6 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
 
 import {
     Checkbox,
@@ -13,6 +14,7 @@ import {
     Grid,
     makeStyles,
 } from "@material-ui/core";
+import { loginTC } from "../../state/reducers/login-reducer";
 
 const useStyles = makeStyles({
     field: {
@@ -23,6 +25,7 @@ const useStyles = makeStyles({
 
 const Login: React.FC = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const formik = useFormik({
         initialValues: {
@@ -38,12 +41,13 @@ const Login: React.FC = () => {
             rememberMe: Yup.boolean(),
         }),
         onSubmit: (values) => {
-            alert(JSON.stringify(values));
+            //alert(JSON.stringify(values));
+            dispatch(loginTC(values));
         },
     });
 
     return (
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
             <Grid style={{ flexBasis: "auto", marginTop: 20 }} item xs={4}>
                 <form onSubmit={formik.handleSubmit}>
                     <FormControl>

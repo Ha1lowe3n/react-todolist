@@ -5,7 +5,7 @@ type ResponseType<T> = {
     resultCode: number;
     messages: Array<string>;
     data: T;
-    fieldsErrors: string[];
+    fieldsErrors?: string[];
 };
 // --------------------
 
@@ -60,7 +60,7 @@ export type UpdateTaskModelType = {
 // --------------------
 
 export const instance = axios.create({
-    baseURL: `https://social-network.samuraijs.com/api/1.1/todo-lists/`,
+    baseURL: `https://social-network.samuraijs.com/api/1.1/`,
     withCredentials: true,
     headers: {
         "API-KEY": "f6d122c0-e13a-41a0-8a89-732f8ec98129",
@@ -69,21 +69,23 @@ export const instance = axios.create({
 
 export const todolistsAPI = {
     getTodolists() {
-        return instance.get<TodolistType[]>(``).then((res) => res.data);
+        return instance
+            .get<TodolistType[]>(`todo-lists`)
+            .then((res) => res.data);
     },
     createTodolist(title: string) {
         return instance
-            .post<ResponseType<{ item: TodolistType }>>(``, { title })
+            .post<ResponseType<{ item: TodolistType }>>(`todo-lists`, { title })
             .then((res) => res.data);
     },
     deleteTodolist(todolistId: string) {
         return instance
-            .delete<ResponseType<{}>>(`${todolistId}`)
+            .delete<ResponseType<{}>>(`todo-lists/${todolistId}`)
             .then((res) => res.data);
     },
     updateTodolist(todolistId: string, title: string) {
         return instance
-            .put<ResponseType<{}>>(`${todolistId}`, { title })
+            .put<ResponseType<{}>>(`todo-lists/${todolistId}`, { title })
             .then((res) => res.data);
     },
 };
@@ -91,27 +93,46 @@ export const todolistsAPI = {
 export const tasksAPI = {
     getTasks(todolistId: string) {
         return instance
-            .get<GetTasksType>(`${todolistId}/tasks`)
+            .get<GetTasksType>(`todo-lists/${todolistId}/tasks`)
             .then((res) => res.data);
     },
     createTask(todolistId: string, title: string) {
         return instance
-            .post<ResponseType<{ item: TaskType }>>(`${todolistId}/tasks`, {
-                title,
-            })
+            .post<ResponseType<{ item: TaskType }>>(
+                `todo-lists/${todolistId}/tasks`,
+                {
+                    title,
+                }
+            )
             .then((res) => res.data);
     },
     deleteTask(todolistId: string, taskId: string) {
         return instance
-            .delete<ResponseType<{}>>(`${todolistId}/tasks/${taskId}`)
+            .delete<ResponseType<{}>>(
+                `todo-lists/${todolistId}/tasks/${taskId}`
+            )
             .then((res) => res.data);
     },
     updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
         return instance
             .put<ResponseType<{ item: TaskType }>>(
-                `${todolistId}/tasks/${taskId}`,
+                `todo-lists/${todolistId}/tasks/${taskId}`,
                 model
             )
+            .then((res) => res.data);
+    },
+};
+
+export type LoginParamsType = {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+    captcha?: string;
+};
+export const authAPI = {
+    login(data: LoginParamsType) {
+        return instance
+            .post<ResponseType<{ userId?: number }>>(`auth/login`, data)
             .then((res) => res.data);
     },
 };
