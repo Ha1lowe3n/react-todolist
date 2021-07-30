@@ -1,7 +1,8 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import {
     Checkbox,
@@ -15,6 +16,7 @@ import {
     makeStyles,
 } from "@material-ui/core";
 import { loginTC } from "../../state/reducers/login-reducer";
+import { AppRootStateType } from "../../state/store";
 
 const useStyles = makeStyles({
     field: {
@@ -26,6 +28,9 @@ const useStyles = makeStyles({
 const Login: React.FC = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(
+        (state) => state.auth.isLoggedIn
+    );
 
     const formik = useFormik({
         initialValues: {
@@ -46,6 +51,9 @@ const Login: React.FC = () => {
         },
     });
 
+    if (isLoggedIn) {
+        return <Redirect to={"/"} />;
+    }
     return (
         <Grid container justifyContent="center">
             <Grid style={{ flexBasis: "auto", marginTop: 20 }} item xs={4}>
@@ -76,7 +84,6 @@ const Login: React.FC = () => {
                                 helperText={formik.errors.email}
                                 error={!!formik.errors.email}
                             />
-
                             <TextField
                                 className={classes.field}
                                 type="password"
@@ -86,7 +93,6 @@ const Login: React.FC = () => {
                                 helperText={formik.errors.password}
                                 error={!!formik.errors.password}
                             />
-
                             <FormControlLabel
                                 label={"Remember me"}
                                 control={
