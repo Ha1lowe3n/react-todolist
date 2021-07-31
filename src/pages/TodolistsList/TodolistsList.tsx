@@ -22,6 +22,7 @@ import {
 } from "../../state/reducers/tasks-reducer";
 import { TaskStatuses } from "../../api/todolists-api";
 import { AppRootStateType } from "../../state/store";
+import { Redirect } from "react-router-dom";
 
 type TodolistsListPropsType = {
     demo?: boolean;
@@ -35,9 +36,12 @@ const TodolistsList: React.FC<TodolistsListPropsType> = ({ demo = false }) => {
     const tasks = useSelector<AppRootStateType, TaskStateType>(
         (state) => state.tasks
     );
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(
+        (state) => state.auth.isLoggedIn
+    );
 
     useEffect(() => {
-        if (demo) return;
+        if (demo || !isLoggedIn) return;
         dispatch(fetchTodolistsTC());
     }, [dispatch, demo]);
 
@@ -104,6 +108,9 @@ const TodolistsList: React.FC<TodolistsListPropsType> = ({ demo = false }) => {
         [dispatch]
     );
 
+    if (!isLoggedIn) {
+        return <Redirect to={"/login"} />;
+    }
     return (
         <>
             <Grid container>

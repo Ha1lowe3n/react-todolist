@@ -4,7 +4,7 @@ import {
     handleServerAppError,
     handleServerNetworkError,
 } from "../../utils/error-handle";
-import { appActions } from "./app-reducer";
+import { setAppStatusAC } from "./app-reducer";
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 export type LoginActionsType = ReturnType<InferValueTypes<typeof loginActions>>;
@@ -37,22 +37,35 @@ export const loginActions = {
 };
 
 // thunks
-const { setStatusAC } = appActions;
 const { setIsLoggedIn } = loginActions;
 
 export const loginTC =
     (data: LoginParamsType): ThunkType =>
     async (dispatch) => {
         try {
-            dispatch(setStatusAC("loading"));
+            dispatch(setAppStatusAC("loading"));
             const { resultCode, messages } = await authAPI.login(data);
             if (resultCode === 0) {
                 dispatch(setIsLoggedIn(true));
             } else {
                 handleServerAppError(messages, dispatch);
             }
-            dispatch(setStatusAC("succeeded"));
+            dispatch(setAppStatusAC("succeeded"));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }
     };
+export const logoutTC = (): ThunkType => async (dispatch) => {
+    try {
+        dispatch(setAppStatusAC("loading"));
+        const { resultCode, messages } = await authAPI.logout();
+        if (resultCode === 0) {
+            dispatch(setIsLoggedIn(false));
+        } else {
+            handleServerAppError(messages, dispatch);
+        }
+        dispatch(setAppStatusAC("succeeded"));
+    } catch (err) {
+        handleServerNetworkError(err.message, dispatch);
+    }
+};

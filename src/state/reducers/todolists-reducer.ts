@@ -1,7 +1,7 @@
 import { todolistsAPI, TodolistType } from "../../api/todolists-api";
 import { ThunkType } from "../store";
 import { fetchTasksTC } from "./tasks-reducer";
-import { appActions, RequestStatusType } from "./app-reducer";
+import { RequestStatusType, setAppStatusAC } from "./app-reducer";
 import { handleServerNetworkError } from "../../utils/error-handle";
 
 export type TodolistActionsType =
@@ -97,11 +97,10 @@ export const setTodolistsAC = (todolists: TodolistType[]) => ({
 });
 
 // thunk creators
-const { setStatusAC } = appActions;
 
 export const fetchTodolistsTC = (): ThunkType => async (dispatch) => {
     try {
-        dispatch(setStatusAC("loading"));
+        dispatch(setAppStatusAC("loading"));
         const todolists = await todolistsAPI.getTodolists();
         dispatch(setTodolistsAC(todolists));
         todolists.forEach((tl) => dispatch(fetchTasksTC(tl.id)));
@@ -113,13 +112,13 @@ export const deleteTodolistTC =
     (todolistId: string): ThunkType =>
     async (dispatch) => {
         try {
-            dispatch(setStatusAC("loading"));
+            dispatch(setAppStatusAC("loading"));
             dispatch(changeTodolistEntityStatusAC(todolistId, "loading"));
 
             await todolistsAPI.deleteTodolist(todolistId);
 
             dispatch(removeTodolistAC(todolistId));
-            dispatch(setStatusAC("succeeded"));
+            dispatch(setAppStatusAC("succeeded"));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }
@@ -128,12 +127,12 @@ export const createTodolistTC =
     (title: string): ThunkType =>
     async (dispatch) => {
         try {
-            dispatch(setStatusAC("loading"));
+            dispatch(setAppStatusAC("loading"));
             const {
                 data: { item },
             } = await todolistsAPI.createTodolist(title);
             dispatch(addTodolistAC(item));
-            dispatch(setStatusAC("succeeded"));
+            dispatch(setAppStatusAC("succeeded"));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }
@@ -142,10 +141,10 @@ export const changeTodolistTitleTC =
     (todolistId: string, newTodolistTitle: string): ThunkType =>
     async (dispatch) => {
         try {
-            dispatch(setStatusAC("loading"));
+            dispatch(setAppStatusAC("loading"));
             await todolistsAPI.updateTodolist(todolistId, newTodolistTitle);
             dispatch(changeTodolistTitleAC(todolistId, newTodolistTitle));
-            dispatch(setStatusAC("succeeded"));
+            dispatch(setAppStatusAC("succeeded"));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }

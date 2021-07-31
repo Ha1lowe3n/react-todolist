@@ -135,4 +135,16 @@ export const authAPI = {
             .post<ResponseType<{ userId?: number }>>(`auth/login`, data)
             .then((res) => res.data);
     },
+    authMe() {
+        return instance
+            .get<ResponseType<{ id: number; email: string; login: string }>>(
+                `auth/me`
+            )
+            .then((res) => res.data);
+    },
+    logout() {
+        return instance
+            .delete<ResponseType<{}>>(`auth/login`)
+            .then((res) => res.data);
+    },
 };

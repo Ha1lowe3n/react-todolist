@@ -46,7 +46,6 @@ const Login: React.FC = () => {
             rememberMe: Yup.boolean(),
         }),
         onSubmit: (values) => {
-            //alert(JSON.stringify(values));
             dispatch(loginTC(values));
         },
     });
