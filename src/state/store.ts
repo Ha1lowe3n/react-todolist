@@ -1,4 +1,4 @@
-import { combineReducers, compose } from "redux";
+import { combineReducers } from "redux";
 import thunkMiddleware, { ThunkAction } from "redux-thunk";
 import { configureStore } from "@reduxjs/toolkit";
 

@@ -40,11 +40,11 @@ function App({ demo = false }: AppPropsType) {
 
     useEffect(() => {
         dispatch(initializeTC());
-    }, []);
+    }, [dispatch]);
 
     const handleLogout = useCallback(() => {
         dispatch(logoutTC());
-    }, []);
+    }, [dispatch]);
 
     if (!isInitialized) {
         return (

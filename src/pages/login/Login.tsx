@@ -66,6 +66,7 @@ const Login: React.FC = () => {
                                         "https://social-network.samuraijs.com/"
                                     }
                                     target={"_blank"}
+                                    rel="noreferrer"
                                 >
                                     here
                                 </a>
