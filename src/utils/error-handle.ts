@@ -1,30 +1,10 @@
-import { ThunkDispatch } from "redux-thunk";
-import { CombinedState } from "redux";
+import { Dispatch } from "redux";
 
-import {
-    AppDomainType,
-    setAppErrorAC,
-    setAppStatusAC,
-} from "../state/reducers/app-reducer";
-import { TodolistDomainType } from "../state/reducers/todolists-reducer";
-import { TaskStateType } from "../state/reducers/tasks-reducer";
-import { AppRootActionsType } from "../state/store";
-import { LoginStateType } from "../state/reducers/login-reducer";
-
-type DispatchType = ThunkDispatch<
-    CombinedState<{
-        todolists: TodolistDomainType[];
-        tasks: TaskStateType;
-        app: AppDomainType;
-        auth: LoginStateType;
-    }>,
-    unknown,
-    AppRootActionsType
->;
+import { setAppErrorAC, setAppStatusAC } from "../state/reducers/app-reducer";
 
 export const handleServerAppError = (
     messages: string[],
-    dispatch: DispatchType
+    dispatch: Dispatch
 ) => {
     if (messages.length) {
         dispatch(setAppErrorAC(messages[0]));
@@ -35,7 +15,7 @@ export const handleServerAppError = (
 
 export const handleServerNetworkError = (
     errorMessage: string,
-    dispatch: DispatchType
+    dispatch: Dispatch
 ) => {
     dispatch(
         setAppErrorAC(errorMessage ? errorMessage : "Some error occurred")

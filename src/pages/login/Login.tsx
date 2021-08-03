@@ -15,7 +15,7 @@ import {
     Grid,
     makeStyles,
 } from "@material-ui/core";
-import { loginTC } from "../../state/reducers/login-reducer";
+import { loginTC } from "../../state/reducers/auth-reducer";
 import { AppRootStateType } from "../../state/store";
 
 const useStyles = makeStyles({

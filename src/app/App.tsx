@@ -20,7 +20,7 @@ import { ErrorSnackbar } from "../components/ErrorSnackbar";
 import { AppRootStateType } from "../state/store";
 import { initializeTC, RequestStatusType } from "../state/reducers/app-reducer";
 import Login from "../pages/login/Login";
-import { logoutTC } from "../state/reducers/login-reducer";
+import { logoutTC } from "../state/reducers/auth-reducer";
 
 type AppPropsType = {
     demo?: boolean;

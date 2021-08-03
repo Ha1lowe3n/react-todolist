@@ -9,7 +9,7 @@ import { AppRootStateType } from "../state/store";
 import { TaskPriorities, TaskStatuses } from "../api/todolists-api";
 import { appReducer } from "../state/reducers/app-reducer";
 import thunkMiddleware from "redux-thunk";
-import { authReducer } from "../state/reducers/login-reducer";
+import { authReducer } from "../state/reducers/auth-reducer";
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,

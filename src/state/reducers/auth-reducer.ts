@@ -1,4 +1,6 @@
-import { ThunkType } from "../store";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Dispatch } from "redux";
+
 import { authAPI, LoginParamsType } from "../../api/todolists-api";
 import {
     handleServerAppError,
@@ -6,47 +8,32 @@ import {
 } from "../../utils/error-handle";
 import { setAppStatusAC } from "./app-reducer";
 
-type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
-export type LoginActionsType = ReturnType<InferValueTypes<typeof loginActions>>;
-export type LoginStateType = {
-    isLoggedIn: boolean;
-};
-
-const initialState: LoginStateType = {
+const initialState = {
     isLoggedIn: false,
 };
 
-export const authReducer = (
-    state: LoginStateType = initialState,
-    action: LoginActionsType
-): LoginStateType => {
-    switch (action.type) {
-        case "SET-IS-LOGGED-IN":
-            return { ...state, isLoggedIn: action.value };
-        default:
-            return state;
-    }
-};
+const slice = createSlice({
+    name: "auth",
+    initialState: initialState,
+    reducers: {
+        setIsLoggedIn(state, action: PayloadAction<{ value: boolean }>) {
+            state.isLoggedIn = action.payload.value;
+        },
+    },
+});
 
-// action creators
-export const loginActions = {
-    setIsLoggedIn: (value: boolean) => ({
-        type: "SET-IS-LOGGED-IN" as const,
-        value,
-    }),
-};
+export const authReducer = slice.reducer;
 
 // thunks
-const { setIsLoggedIn } = loginActions;
+export const { setIsLoggedIn } = slice.actions;
 
 export const loginTC =
-    (data: LoginParamsType): ThunkType =>
-    async (dispatch) => {
+    (data: LoginParamsType) => async (dispatch: Dispatch) => {
         try {
             dispatch(setAppStatusAC("loading"));
             const { resultCode, messages } = await authAPI.login(data);
             if (resultCode === 0) {
-                dispatch(setIsLoggedIn(true));
+                dispatch(setIsLoggedIn({ value: true }));
             } else {
                 handleServerAppError(messages, dispatch);
             }
@@ -55,12 +42,12 @@ export const loginTC =
             handleServerNetworkError(err.message, dispatch);
         }
     };
-export const logoutTC = (): ThunkType => async (dispatch) => {
+export const logoutTC = () => async (dispatch: Dispatch) => {
     try {
         dispatch(setAppStatusAC("loading"));
         const { resultCode, messages } = await authAPI.logout();
         if (resultCode === 0) {
-            dispatch(setIsLoggedIn(false));
+            dispatch(setIsLoggedIn({ value: false }));
         } else {
             handleServerAppError(messages, dispatch);
         }

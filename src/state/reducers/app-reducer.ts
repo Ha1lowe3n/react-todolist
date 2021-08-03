@@ -1,10 +1,11 @@
+import { Dispatch } from "redux";
+
 import { authAPI } from "../../api/todolists-api";
-import { ThunkType } from "../store";
 import {
     handleServerAppError,
     handleServerNetworkError,
 } from "../../utils/error-handle";
-import { loginActions } from "./login-reducer";
+import { setIsLoggedIn } from "./auth-reducer";
 
 export type RequestStatusType = "idle" | "loading" | "succeeded" | "failed";
 export type AppDomainType = {
@@ -53,13 +54,12 @@ export const setAppInitializedAC = (value: boolean) => ({
 });
 
 // thunks
-const { setIsLoggedIn } = loginActions;
 
-export const initializeTC = (): ThunkType => async (dispatch) => {
+export const initializeTC = () => async (dispatch: Dispatch) => {
     try {
         const { resultCode, messages } = await authAPI.authMe();
         if (resultCode === 0) {
-            dispatch(setIsLoggedIn(true));
+            dispatch(setIsLoggedIn({ value: true }));
         } else {
             handleServerAppError(messages, dispatch);
         }
