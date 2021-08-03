@@ -1,3 +1,5 @@
+import { Dispatch } from "redux";
+
 import {
     addTodolistAC,
     removeTodolistAC,
@@ -125,33 +127,30 @@ export const setTasksAC = (tasks: TaskType[], todolistId: string) => ({
 // thunk creators
 
 export const fetchTasksTC =
-    (todolistId: string): ThunkType =>
-    async (dispatch) => {
+    (todolistId: string) => async (dispatch: Dispatch) => {
         try {
             const { items } = await tasksAPI.getTasks(todolistId);
             dispatch(setTasksAC(items, todolistId));
-            dispatch(setAppStatusAC("succeeded"));
+            dispatch(setAppStatusAC({ status: "succeeded" }));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }
     };
 export const deleteTaskTC =
-    (todolistId: string, taskId: string): ThunkType =>
-    async (dispatch) => {
+    (todolistId: string, taskId: string) => async (dispatch: Dispatch) => {
         try {
-            dispatch(setAppStatusAC("loading"));
+            dispatch(setAppStatusAC({ status: "loading" }));
             await tasksAPI.deleteTask(todolistId, taskId);
             dispatch(removeTaskAC(taskId, todolistId));
-            dispatch(setAppStatusAC("succeeded"));
+            dispatch(setAppStatusAC({ status: "succeeded" }));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }
     };
 export const addTaskTC =
-    (todolistId: string, title: string): ThunkType =>
-    async (dispatch) => {
+    (todolistId: string, title: string) => async (dispatch: Dispatch) => {
         try {
-            dispatch(setAppStatusAC("loading"));
+            dispatch(setAppStatusAC({ status: "loading" }));
             const {
                 data: { item },
                 resultCode,
@@ -163,20 +162,16 @@ export const addTaskTC =
             } else {
                 handleServerAppError(messages, dispatch);
             }
-            dispatch(setAppStatusAC("succeeded"));
+            dispatch(setAppStatusAC({ status: "succeeded" }));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }
     };
 export const updateTaskTC =
-    (
-        todolistId: string,
-        taskId: string,
-        model: UpdateTaskDomainModelType
-    ): ThunkType =>
-    async (dispatch, getState: () => AppRootStateType) => {
+    (todolistId: string, taskId: string, model: UpdateTaskDomainModelType) =>
+    async (dispatch: Dispatch, getState: () => AppRootStateType) => {
         try {
-            dispatch(setAppStatusAC("loading"));
+            dispatch(setAppStatusAC({ status: "loading" }));
             const state = getState();
             const task = state.tasks[todolistId].find(
                 (task) => task.id === taskId
@@ -204,7 +199,7 @@ export const updateTaskTC =
                 } else {
                     handleServerAppError(messages, dispatch);
                 }
-                dispatch(setAppStatusAC("succeeded"));
+                dispatch(setAppStatusAC({ status: "succeeded" }));
             }
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);

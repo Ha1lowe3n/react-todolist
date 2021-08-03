@@ -12,7 +12,6 @@ function Alert(props: AlertProps) {
 }
 
 export function ErrorSnackbar() {
-    // const [open, setOpen] = React.useState(true);
     const dispatch = useDispatch();
     const error = useSelector<AppRootStateType, string | null>(
         (state) => state.app.error
@@ -20,8 +19,7 @@ export function ErrorSnackbar() {
 
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
         if (reason === "clickaway") return;
-        // setOpen(false);
-        dispatch(setAppErrorAC(null));
+        dispatch(setAppErrorAC({ error: null }));
     };
 
     return (

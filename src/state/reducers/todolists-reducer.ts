@@ -1,6 +1,6 @@
+import { Dispatch } from "redux";
+
 import { todolistsAPI, TodolistType } from "../../api/todolists-api";
-import { ThunkType } from "../store";
-import { fetchTasksTC } from "./tasks-reducer";
 import { RequestStatusType, setAppStatusAC } from "./app-reducer";
 import { handleServerNetworkError } from "../../utils/error-handle";
 
@@ -97,54 +97,50 @@ export const setTodolistsAC = (todolists: TodolistType[]) => ({
 });
 
 // thunk creators
-
-export const fetchTodolistsTC = (): ThunkType => async (dispatch) => {
+export const fetchTodolistsTC = () => async (dispatch: Dispatch) => {
     try {
-        dispatch(setAppStatusAC("loading"));
+        dispatch(setAppStatusAC({ status: "loading" }));
         const todolists = await todolistsAPI.getTodolists();
         dispatch(setTodolistsAC(todolists));
-        todolists.forEach((tl) => dispatch(fetchTasksTC(tl.id)));
     } catch (err) {
         handleServerNetworkError(err.message, dispatch);
     }
 };
 export const deleteTodolistTC =
-    (todolistId: string): ThunkType =>
-    async (dispatch) => {
+    (todolistId: string) => async (dispatch: Dispatch) => {
         try {
-            dispatch(setAppStatusAC("loading"));
+            dispatch(setAppStatusAC({ status: "loading" }));
             dispatch(changeTodolistEntityStatusAC(todolistId, "loading"));
 
             await todolistsAPI.deleteTodolist(todolistId);
 
             dispatch(removeTodolistAC(todolistId));
-            dispatch(setAppStatusAC("succeeded"));
+            dispatch(setAppStatusAC({ status: "succeeded" }));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }
     };
 export const createTodolistTC =
-    (title: string): ThunkType =>
-    async (dispatch) => {
+    (title: string) => async (dispatch: Dispatch) => {
         try {
-            dispatch(setAppStatusAC("loading"));
+            dispatch(setAppStatusAC({ status: "loading" }));
             const {
                 data: { item },
             } = await todolistsAPI.createTodolist(title);
             dispatch(addTodolistAC(item));
-            dispatch(setAppStatusAC("succeeded"));
+            dispatch(setAppStatusAC({ status: "succeeded" }));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }
     };
 export const changeTodolistTitleTC =
-    (todolistId: string, newTodolistTitle: string): ThunkType =>
-    async (dispatch) => {
+    (todolistId: string, newTodolistTitle: string) =>
+    async (dispatch: Dispatch) => {
         try {
-            dispatch(setAppStatusAC("loading"));
+            dispatch(setAppStatusAC({ status: "loading" }));
             await todolistsAPI.updateTodolist(todolistId, newTodolistTitle);
             dispatch(changeTodolistTitleAC(todolistId, newTodolistTitle));
-            dispatch(setAppStatusAC("succeeded"));
+            dispatch(setAppStatusAC({ status: "succeeded" }));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }

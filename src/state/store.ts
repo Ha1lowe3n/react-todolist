@@ -7,7 +7,7 @@ import {
     todolistsReducer,
 } from "./reducers/todolists-reducer";
 import { TaskActionsType, tasksReducer } from "./reducers/tasks-reducer";
-import { AppActionsType, appReducer } from "./reducers/app-reducer";
+import { appReducer } from "./reducers/app-reducer";
 import { authReducer } from "./reducers/auth-reducer";
 
 const rootReducer = combineReducers({
@@ -18,10 +18,7 @@ const rootReducer = combineReducers({
 });
 
 export type AppRootStateType = ReturnType<typeof rootReducer>;
-export type AppRootActionsType =
-    | TodolistActionsType
-    | TaskActionsType
-    | AppActionsType;
+export type AppRootActionsType = TodolistActionsType | TaskActionsType;
 export type ThunkType = ThunkAction<
     void,
     AppRootStateType,

@@ -30,28 +30,28 @@ export const { setIsLoggedIn } = slice.actions;
 export const loginTC =
     (data: LoginParamsType) => async (dispatch: Dispatch) => {
         try {
-            dispatch(setAppStatusAC("loading"));
+            dispatch(setAppStatusAC({ status: "loading" }));
             const { resultCode, messages } = await authAPI.login(data);
             if (resultCode === 0) {
                 dispatch(setIsLoggedIn({ value: true }));
             } else {
                 handleServerAppError(messages, dispatch);
             }
-            dispatch(setAppStatusAC("succeeded"));
+            dispatch(setAppStatusAC({ status: "succeeded" }));
         } catch (err) {
             handleServerNetworkError(err.message, dispatch);
         }
     };
 export const logoutTC = () => async (dispatch: Dispatch) => {
     try {
-        dispatch(setAppStatusAC("loading"));
+        dispatch(setAppStatusAC({ status: "loading" }));
         const { resultCode, messages } = await authAPI.logout();
         if (resultCode === 0) {
             dispatch(setIsLoggedIn({ value: false }));
         } else {
             handleServerAppError(messages, dispatch);
         }
-        dispatch(setAppStatusAC("succeeded"));
+        dispatch(setAppStatusAC({ status: "succeeded" }));
     } catch (err) {
         handleServerNetworkError(err.message, dispatch);
     }

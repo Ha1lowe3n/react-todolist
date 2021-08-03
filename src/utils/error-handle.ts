@@ -7,9 +7,9 @@ export const handleServerAppError = (
     dispatch: Dispatch
 ) => {
     if (messages.length) {
-        dispatch(setAppErrorAC(messages[0]));
+        dispatch(setAppErrorAC({ error: messages[0] }));
     } else {
-        dispatch(setAppErrorAC("Some error occurred"));
+        dispatch(setAppErrorAC({ error: "Some error occurred" }));
     }
 };
 
@@ -18,7 +18,9 @@ export const handleServerNetworkError = (
     dispatch: Dispatch
 ) => {
     dispatch(
-        setAppErrorAC(errorMessage ? errorMessage : "Some error occurred")
+        setAppErrorAC({
+            error: errorMessage ? errorMessage : "Some error occurred",
+        })
     );
-    dispatch(setAppStatusAC("succeeded"));
+    dispatch(setAppStatusAC({ status: "succeeded" }));
 };
