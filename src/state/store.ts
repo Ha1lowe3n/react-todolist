@@ -1,5 +1,6 @@
 import { createStore, combineReducers, compose, applyMiddleware } from "redux";
 import thunkMiddleware, { ThunkAction } from "redux-thunk";
+import { configureStore } from "@reduxjs/toolkit";
 
 import {
     TodolistActionsType,
@@ -36,7 +37,13 @@ export type ThunkType = ThunkAction<
     AppRootActionsType
 >;
 
-export const store = createStore(
-    rootReducer,
-    composeEnhancers(applyMiddleware(thunkMiddleware))
-);
+// export const store = createStore(
+//     rootReducer,
+//     composeEnhancers(applyMiddleware(thunkMiddleware))
+// );
+
+export const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().prepend(thunkMiddleware),
+});
