@@ -17,6 +17,7 @@ import Todolist from "./Todolist/Todolist";
 import {
     addTaskTC,
     deleteTaskTC,
+    fetchTasksTC,
     TaskStateType,
     updateTaskTC,
 } from "../../state/reducers/tasks-reducer";
@@ -42,7 +43,10 @@ const TodolistsList: React.FC<TodolistsListPropsType> = ({ demo = false }) => {
 
     useEffect(() => {
         if (demo || !isLoggedIn) return;
-        dispatch(fetchTodolistsTC());
+        (async () => {
+            await dispatch(fetchTodolistsTC());
+            dispatch(fetchTasksTC());
+        })();
     }, [dispatch, demo, isLoggedIn]);
 
     const changeTodoListFilter = useCallback(
