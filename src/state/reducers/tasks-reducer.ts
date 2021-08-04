@@ -11,7 +11,7 @@ import {
     TaskStatuses,
     TaskType,
 } from "../../api/todolists-api";
-import { AppRootStateType, ThunkType } from "../store";
+import { AppRootStateType } from "../store";
 import {
     handleServerAppError,
     handleServerNetworkError,
@@ -45,7 +45,7 @@ const initialState: TaskStateType = {};
 
 export const tasksReducer = (
     state: TaskStateType = initialState,
-    action: TaskActionsType
+    action: any
 ): TaskStateType => {
     switch (action.type) {
         case "ADD-TASK":
@@ -77,16 +77,16 @@ export const tasksReducer = (
                         : task;
                 }),
             };
-        case "ADD-TODOLIST":
-            return { ...state, [action.todolist.id]: [] };
+        case addTodolistAC.type:
+            return { ...state, [action.payload.todolist.id]: [] };
         case "REMOVE-TODOLIST": {
             const newState = { ...state };
-            delete newState[action.id];
+            delete newState[action.payload.id];
             return newState;
         }
         case "SET-TODOLISTS": {
             const newState = { ...state };
-            action.todolists.forEach((tl) => {
+            action.payload.todolists.forEach((tl: any) => {
                 newState[tl.id] = [];
             });
             return newState;

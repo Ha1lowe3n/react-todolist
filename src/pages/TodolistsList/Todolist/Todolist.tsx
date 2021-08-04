@@ -104,18 +104,19 @@ const Todolist = React.memo(function ({
             />
 
             <ul className={"todolists_tasks"}>
-                {tasks.map((task) => {
-                    return (
-                        <Task
-                            key={task.id}
-                            changeCheckStatus={changeCheckStatus}
-                            removeTask={removeTask}
-                            changeTaskTitle={changeTaskTitle}
-                            task={task}
-                            todolistId={todolist.id}
-                        />
-                    );
-                })}
+                {tasks &&
+                    tasks.map((task) => {
+                        return (
+                            <Task
+                                key={task.id}
+                                changeCheckStatus={changeCheckStatus}
+                                removeTask={removeTask}
+                                changeTaskTitle={changeTaskTitle}
+                                task={task}
+                                todolistId={todolist.id}
+                            />
+                        );
+                    })}
             </ul>
             <div>
                 <Button
