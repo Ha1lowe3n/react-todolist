@@ -39,8 +39,8 @@ const slice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        addTaskAC(state, action: PayloadAction<{ task: TaskType }>) {
-            state[action.payload.task.todoListId].unshift(action.payload.task);
+        addTaskAC(state, action: PayloadAction<TaskType>) {
+            state[action.payload.todoListId].unshift(action.payload);
         },
         removeTaskAC(
             state,
@@ -96,7 +96,6 @@ export const fetchTasksTC =
     () => async (dispatch: Dispatch, getState: () => AppRootStateType) => {
         try {
             const todolists = getState().todolists;
-            console.log(todolists);
             for (const tl of todolists) {
                 const { items } = await tasksAPI.getTasks(tl.id);
                 dispatch(setTasksAC({ tasks: items, todolistId: tl.id }));
@@ -128,7 +127,7 @@ export const addTaskTC =
             } = await tasksAPI.createTask(todolistId, title);
 
             if (resultCode === 0) {
-                dispatch(addTaskAC({ task: item }));
+                dispatch(addTaskAC(item));
             } else {
                 handleServerAppError(messages, dispatch);
             }

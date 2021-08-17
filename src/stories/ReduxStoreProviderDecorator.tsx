@@ -2,6 +2,7 @@ import React from "react";
 import { Provider } from "react-redux";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { v1 } from "uuid";
+import { MemoryRouter } from "react-router";
 
 import { tasksReducer } from "../state/reducers/tasks-reducer";
 import { todolistsReducer } from "../state/reducers/todolists-reducer";
@@ -111,5 +112,7 @@ export const storyBookStore = createStore(
 );
 
 export const ReduxStoreProviderDecorator = (storyFn: any) => (
-    <Provider store={storyBookStore}>{storyFn()}</Provider>
+    <Provider store={storyBookStore}>
+        <MemoryRouter>{storyFn()}</MemoryRouter>
+    </Provider>
 );

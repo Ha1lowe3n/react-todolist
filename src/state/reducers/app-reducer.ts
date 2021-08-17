@@ -10,9 +10,15 @@ import { setIsLoggedIn } from "./auth-reducer";
 
 export type RequestStatusType = "idle" | "loading" | "succeeded" | "failed";
 
-const initialState = {
-    status: "idle" as RequestStatusType,
-    error: null as string | null,
+export type AppDomainType = {
+    status: RequestStatusType;
+    error: string | null;
+    isInitialized: boolean;
+};
+
+const initialState: AppDomainType = {
+    status: "idle",
+    error: null,
     isInitialized: false,
 };
 

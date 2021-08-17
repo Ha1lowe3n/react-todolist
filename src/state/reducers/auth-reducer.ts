@@ -8,7 +8,11 @@ import {
 } from "../../utils/error-handle";
 import { setAppStatusAC } from "./app-reducer";
 
-const initialState = {
+export type AuthDomainType = {
+    isLoggedIn: boolean;
+};
+
+const initialState: AuthDomainType = {
     isLoggedIn: false,
 };
 

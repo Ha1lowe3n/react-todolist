@@ -132,7 +132,10 @@ test("new task should be added in correct todolist", () => {
 });
 
 test("task should be deleted from correct array", () => {
-    const endState = tasksReducer(startState, removeTaskAC("2", todolistId2));
+    const endState = tasksReducer(
+        startState,
+        removeTaskAC({ taskId: "2", todolistId: todolistId2 })
+    );
 
     expect(endState[todolistId2].length).toBe(2);
     expect(endState[todolistId1].length).toBe(3);
@@ -142,8 +145,12 @@ test("task should be deleted from correct array", () => {
 test("task should be updated", () => {
     const endState = tasksReducer(
         startState,
-        updateTaskAC(arrayTasksOfTodolist1[0].id, todolistId1, {
-            status: 2,
+        updateTaskAC({
+            taskId: arrayTasksOfTodolist1[0].id,
+            todolistId: todolistId1,
+            model: {
+                status: 2,
+            },
         })
     );
 
@@ -156,10 +163,12 @@ test("new array should be added when new todolist is added", () => {
     const endState = tasksReducer(
         startState,
         addTodolistAC({
-            id: newTodolistId,
-            title: "newTodolist",
-            addedDate: "",
-            order: 0,
+            todolist: {
+                id: newTodolistId,
+                title: "newTodolist",
+                addedDate: "",
+                order: 0,
+            },
         })
     );
 
@@ -174,10 +183,12 @@ test("new array should be added when new todolist is added", () => {
 });
 
 test("empty arrays should be added when we set todolists", () => {
-    const action = setTodolistsAC([
-        { id: "1", title: "title 1", order: 0, addedDate: "" },
-        { id: "2", title: "title 2", order: 0, addedDate: "" },
-    ]);
+    const action = setTodolistsAC({
+        todolists: [
+            { id: "1", title: "title 1", order: 0, addedDate: "" },
+            { id: "2", title: "title 2", order: 0, addedDate: "" },
+        ],
+    });
 
     const endState = tasksReducer({}, action);
     const keys = Object.keys(endState);
@@ -188,7 +199,10 @@ test("empty arrays should be added when we set todolists", () => {
 });
 
 test("tasks should be added for todolists by todolistId", () => {
-    const action = setTasksAC(startState[todolistId1], todolistId1);
+    const action = setTasksAC({
+        tasks: startState[todolistId1],
+        todolistId: todolistId1,
+    });
 
     const endState = tasksReducer({}, action);
 
